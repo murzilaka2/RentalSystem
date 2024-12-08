@@ -1,0 +1,187 @@
+﻿@page "/adminDashboard/updateCar"
+@using RentalSystem.Models
+@model RentalSystem.Pages.Admin.Cars.UpdateCarModel
+@{
+    ViewData["Title"] = "Update Car";
+    ViewData["CurrentPage"] = "<a href='/adminDashboard'>Admin Dashboard</a> / <a href='/adminDashboard/cars'>Cars</a> / Update Car";
+}
+
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+
+            <div class="d-flex flex-wrap align-items-center gap-3 mb-3 my-hr">
+                <a href="@(Model.ReturnUrl ?? "/adminDashboard/cars")"
+                   class="badge text-sm fw-semibold text-primary-600 bg-primary-100 px-20 py-9 radius-4 text-white d-inline-flex align-items-center gap-2">
+                    <iconify-icon icon="mage:arrow-left" class="text-xl"></iconify-icon>
+                    Back
+                </a>
+            </div>
+
+            @if (TempData["SuccessfullyChanged"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", "Car has been successfully updated.")
+            }
+
+            <form asp-page-handler="UpdateCar" method="post" enctype="multipart/form-data">
+
+                <input asp-for="CarModel.Id" type="hidden" />
+                <input asp-for="CarModel.DisplayImage" type="hidden" />
+                <input asp-for="ReturnUrl" type="hidden" />
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.Brand" class="form-label fw-semibold text-primary-light text-sm mb-8">Brand <span class="text-danger-600">*</span></label>
+                            <input asp-for="CarModel.Brand" class="form-control radius-8" placeholder="Enter brand" />
+                            <span asp-validation-for="CarModel.Brand" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.Model" class="form-label fw-semibold text-primary-light text-sm mb-8">Model <span class="text-danger-600">*</span></label>
+                            <input asp-for="CarModel.Model" class="form-control radius-8" placeholder="Enter model" />
+                            <span asp-validation-for="CarModel.Model" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.Color" class="form-label fw-semibold text-primary-light text-sm mb-8">Color</label>
+                            <input asp-for="CarModel.Color" class="form-control radius-8" placeholder="Enter color" />
+                            <span asp-validation-for="CarModel.Color" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.EngineDisplacement" class="form-label fw-semibold text-primary-light text-sm mb-8">Engine displacement</label>
+                            <input asp-for="CarModel.EngineDisplacement" class="form-control radius-8" placeholder="Enter engine displacement" />
+                            <span asp-validation-for="CarModel.EngineDisplacement" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.Year" class="form-label fw-semibold text-primary-light text-sm mb-8">Year</label>
+                            <input asp-for="CarModel.Year" class="form-control radius-8" placeholder="Enter year" />
+                            <span asp-validation-for="CarModel.Year" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <!-- Upload Image Start -->
+                            <h6 class="text-md text-primary-light mb-16">Car Image</h6>
+                            <div class="mb-24 mt-16">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
+                                        <input asp-for="CarModel.Image" type="file" id="imageUpload" accept=".png, .jpg, .jpeg" hidden="">
+                                        <label for="imageUpload" class="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle">
+                                            <iconify-icon icon="solar:camera-outline" class="icon"></iconify-icon>
+                                        </label>
+                                    </div>
+                                    <div class="avatar-preview">
+
+                                        @if (Model.CarModel.DisplayImage is null)
+                                        {
+                                            <div id="imagePreview" style="width: 150px; height: 150px; background-image: url('/assets/images/user-grid/car-default.jpg'); background-size: cover; background-position: center center;"></div>
+
+                                        }
+                                        else
+                                        {
+                                            <div id="imagePreview" style="width: 150px; height: 150px; background-image: url('@Model.CarModel.DisplayImage'); background-size: cover; background-position: center center;"></div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Upload Image End -->
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.CurrentMileage" class="form-label fw-semibold text-primary-light text-sm mb-8">Current mileage</label>
+                            <input asp-for="CarModel.CurrentMileage" class="form-control radius-8" placeholder="Enter current mileage" />
+                            <span asp-validation-for="CarModel.CurrentMileage" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.MileageLimit" class="form-label fw-semibold text-primary-light text-sm mb-8">Mileage limit</label>
+                            <input asp-for="CarModel.MileageLimit" class="form-control radius-8" placeholder="Enter mileage limit" />
+                            <span asp-validation-for="CarModel.MileageLimit" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.SeatsCount" class="form-label fw-semibold text-primary-light text-sm mb-8">Seats count</label>
+                            <input asp-for="CarModel.SeatsCount" class="form-control radius-8" placeholder="Enter seats count" />
+                            <span asp-validation-for="CarModel.SeatsCount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.Price" class="form-label fw-semibold text-primary-light text-sm mb-8">Price</label>
+                            <input asp-for="CarModel.Price" class="form-control radius-8" placeholder="Enter seats price" />
+                            <span asp-validation-for="CarModel.Price" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.CarType" class="form-label fw-semibold text-primary-light text-sm mb-8">Car Type</label>
+                            <select asp-for="CarModel.CarType" asp-items="@Html.GetEnumSelectList<CarType>()" class="form-select"></select>
+                            <span asp-validation-for="CarModel.CarType" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="CarModel.Transmission" class="form-label fw-semibold text-primary-light text-sm mb-8">Car Type</label>
+                            <select asp-for="CarModel.Transmission" asp-items="@Html.GetEnumSelectList<Transmission>()" class="form-select"></select>
+                            <span asp-validation-for="CarModel.Transmission" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="d-flex align-items-center justify-content-center gap-3">
+                    <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                        Save
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    @* Для загрузки изображения *@
+    <script>
+        document.getElementById("imageUpload").addEventListener("change", function () {
+            var input = this;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imagePreview').style.backgroundImage = 'url(' + e.target.result + ')';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+    </script>
+
+    @*Переопределение валидации на стороне клиента*@
+    <script>
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        }
+
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+        }
+    </script>
+}

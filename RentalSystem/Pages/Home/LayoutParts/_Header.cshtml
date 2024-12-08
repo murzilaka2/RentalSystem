@@ -1,0 +1,124 @@
+﻿<header class="header sticky-bar header-home-2">
+    <!-- Desc Menu -->
+    <div class="container-fluid background-body">
+        <div class="main-header">
+            <div class="header-left">
+                <div class="header-logo">
+                    <a class="d-flex" href="index.html">
+                        <img class="light-mode" alt="Carento" src="assets/images/logo.png" />
+                    </a>
+                </div>
+                <div class="header-nav">
+                    <nav class="nav-main-menu">
+                        <ul class="main-menu">
+                            <li><a href="/">Home</a></li>
+                            <li><a href="#">Rent</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="nav-main-menu">
+                        <ul class="main-menu">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li>
+                                    <a href="@(User.IsInRole("Admin") ? "/adminDashboard" : User.IsInRole("Employee")?
+                                    "/employeeDashboard":"/customerDashboard" )" style="display:contents">
+                                        <img src="/assetsClient/imgs/template/icons/resolved.svg" style="margin-top:-4px" />
+                                        <span>Dashboard</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/profile" style="display:contents">@User.Identity.Name</a>
+                                </li>
+                                <li>
+                                    <form action="~/logout" method="post">
+                                        <button type="submit" class="btn btn-signin neutral-1000">
+                                            Log Out
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a href="/login">
+                                        <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                            <path d="M1 12C1 12 0 12 0 11C0 10 1 7 6 7C11 7 12 10 12 11C12 12 11 12 11 12H1ZM6 6C6.79565 6 7.55871 5.68393 8.12132 5.12132C8.68393 4.55871 9 3.79565 9 3C9 2.20435 8.68393 1.44129 8.12132 0.87868C7.55871 0.316071 6.79565 0 6 0C5.20435 0 4.44129 0.316071 3.87868 0.87868C3.31607 1.44129 3 2.20435 3 3C3 3.79565 3.31607 4.55871 3.87868 5.12132C4.44129 5.68393 5.20435 6 6 6Z" fill="#101010" />
+                                        </svg>
+                                        Sign In
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/register">
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="height:16px" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 492.91 510.02"><path d="M379.41 283.02c62.68 0 113.5 50.82 113.5 113.5s-50.82 113.5-113.5 113.5c-38.41 0-72.35-19.08-92.89-48.27H24.47C3.5 460.15-1.54 445.06.38 427.65c11.48-102.62 126.59-72.93 172.86-114.59 15.18 44.7 62.18 61.05 98.69 46.91 15.21-44.75 57.58-76.95 107.48-76.95zm-206.77-38.04c8.76 13.89 17.93 28.1 29.3 38.54 10.96 10.01 24.25 16.81 41.82 16.85 19.05.04 32.94-7 44.27-17.57 11.77-11 21.01-26.09 30.18-41.14l24.57-40.5c4.57-10.49 6.25-17.46 5.2-21.58-.63-2.44-3.32-3.64-7.92-3.84-5.3-.23-9.45.46-15.01-.32l8.41-37.26c-62.48 9.84-109.19-36.55-175.19-9.29l4.76 43.91c-2.6.16-5.16.03-7.48-.28-37.9 1.24 9.6 60.59 17.09 72.48zm175.9-80.41c6.05 1.84 9.93 5.69 11.53 11.89 1.76 6.88-.16 16.57-6 29.82-.12.24-.2.48-.36.72l-24.86 40.94c-9.6 15.77-19.29 31.62-32.29 43.75-13.45 12.6-30.02 20.97-52.68 20.89-21.13-.04-37.1-8.12-50.15-20.09C177.96 278 105.2 186.95 137.7 165.01a27.24 27.24 0 015.28-2.68c-1.44-18.81-1.92-42.54-1.04-62.4.48-4.68 1.4-9.4 2.68-14.13 5.57-19.93 19.57-35.98 36.86-46.98 9.57-6.09 20.02-10.69 30.9-13.73 6.93-1.96-5.88-24.13 1.24-24.81 34.63-3.57 90.7 28.05 114.87 54.23 12.09 13.08 19.73 30.5 21.37 53.47l-1.32 56.59zm10.86 183.6l-.01-2.65c.08-5.51 1.15-9.13 8.93-9.02l19.87.25c4.13-.02 6.89.79 8.78 2.81 1.86 1.98 2.5 4.76 2.46 8.7l.01 27.65 29.24-.01c5.42.08 8.99 1.14 8.87 9.11l-.23 20.59c.02 4.21-.76 7.02-2.67 8.95-1.95 1.96-4.68 2.63-8.56 2.59l-26.65.01-.01 27.88c.01 3.81-.64 6.5-2.46 8.45-1.89 2.01-4.65 2.82-8.78 2.8l-19.89.25c-7.75.12-8.82-3.5-8.91-9.01l.01-30.37-26.93-.01c-3.74.02-6.38-.67-8.3-2.59-1.92-1.93-2.69-4.74-2.67-8.94l-.24-20.6c-.12-7.97 3.46-9.03 8.88-9.11l29.26.01v-27.74zm20.01-48.5c53.49 0 96.85 43.36 96.85 96.85 0 53.49-43.36 96.85-96.85 96.85-53.49 0-96.85-43.36-96.85-96.85 0-53.49 43.36-96.85 96.85-96.85z" /></svg>
+                                        Sign Up
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="header-right">
+                    <div class="burger-icon burger-icon-white">
+                        <span class="burger-icon-top"></span>
+                        <span class="burger-icon-mid"> </span>
+                        <span class="burger-icon-bottom"> </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Mobile Menu -->
+<div class="mobile-header-active mobile-header-wrapper-style perfect-scrollbar button-bg-2">
+    <div class="mobile-header-wrapper-inner">
+        <div class="mobile-header-logo">
+            <a class="d-flex" href="/">
+                <img class="light-mode" alt="Carento" src="assets/images/logo.png" />
+            </a>
+            <div class="burger-icon burger-icon-white"></div>
+        </div>
+
+        <div class="mobile-header-content-area">
+            <div class="perfect-scroll">
+                <div class="mobile-menu-wrap mobile-header-border">
+                    <nav>
+                        <ul class="mobile-menu font-heading">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li>@User.Identity.Name</li>
+                            }
+                            <li>
+                                <a href="@(User.IsInRole("Admin") ? "/adminDashboard" : User.IsInRole("Employee")?
+                                    "/employeeDashboard":"/customerDashboard" )">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="#">Rent</a></li>
+                            <li><a href="#">Contact</a></li>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li>
+                                    <form action="~/logout" method="post">
+                                        <button type="submit" class="btn btn-signin neutral-1000">
+                                            Log Out
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li><a href="/login">Login</a></li>
+                                <li><a href="/register">Register</a></li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

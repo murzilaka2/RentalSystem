@@ -1,0 +1,217 @@
+﻿@page "/profile"
+@model ProfileModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="row gy-4">
+    <div class="col-lg-4">
+        <div class="user-grid-card position-relative border radius-16 overflow-hidden bg-base h-100">
+            <img src="assets/images/user-grid/user-grid-bg1.png" alt="Background image" class="w-100 object-fit-cover">
+            <div class="pb-24 ms-16 mb-24 me-16  mt--100">
+                <div class="text-center border border-top-0 border-start-0 border-end-0">
+
+                    @if (Model.CurrentUser.Profile.ProfileImage is null)
+                    {
+                        <img src="assets/images/user-grid/user-grid-img13.png"
+                             class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                    }
+                    else
+                    {
+                        <img src="@Model.CurrentUser.Profile.ProfileImage"
+                             class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                    }
+                    <h6 class="mb-0 mt-16">@Model.CurrentUser.FullName</h6>
+                    <span class="text-secondary-light mb-16">@Model.CurrentUser.Email</span>
+                </div>
+                <div class="mt-24">
+                    <h6 class="text-xl mb-16">Personal Info</h6>
+                    <ul>
+                        <li class="d-flex align-items-center gap-1 mb-12">
+                            <span class="w-30 text-md fw-semibold text-primary-light">Full Name</span>
+                            <span class="w-70 text-secondary-light fw-medium"> @Model.CurrentUser.FullName</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-1 mb-12">
+                            <span class="w-30 text-md fw-semibold text-primary-light"> Email</span>
+                            <span class="w-70 text-secondary-light fw-medium"> @Model.CurrentUser.Email</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-1 mb-12">
+                            <span class="w-30 text-md fw-semibold text-primary-light"> Phone number</span>
+                            <span class="w-70 text-secondary-light fw-medium"> @(Model.CurrentUser.Profile?.PhoneNumber ?? "*")</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-1 mb-12">
+                            <span class="w-30 text-md fw-semibold text-primary-light"> Passport</span>
+                            <span class="w-70 text-secondary-light fw-medium"> @(Model.CurrentUser.Profile?.Passport ?? "*")</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-1 mb-12">
+                            <span class="w-30 text-md fw-semibold text-primary-light"> Driving experience</span>
+                            <span class="w-70 text-secondary-light fw-medium"> @Model.CurrentUser.Profile?.DrivingExperience year(s)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card h-100">
+            <div class="card-body p-24">
+                <ul class="nav border-gradient-tab nav-pills mb-20 d-inline-flex" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link d-flex align-items-center px-24 @(TempData["SuccessfullyPasswordChanged"] == null && TempData["ErrorPasswordChanged"] == null ? "active":"")" id="pills-edit-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-edit-profile" type="button" role="tab" aria-controls="pills-edit-profile" aria-selected="true">
+                            Edit Profile
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link d-flex align-items-center px-24 @(TempData["SuccessfullyPasswordChanged"] != null || TempData["ErrorPasswordChanged"] != null ? "active":"")" id="pills-change-passwork-tab" data-bs-toggle="pill" data-bs-target="#pills-change-passwork" type="button" role="tab" aria-controls="pills-change-passwork" aria-selected="false" tabindex="-1">
+                            Change Password
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show @(TempData["SuccessfullyPasswordChanged"] == null && TempData["ErrorPasswordChanged"] == null ? "active":"fade")" id="pills-edit-profile" role="tabpanel" aria-labelledby="pills-edit-profile-tab" tabindex="0">
+
+                        @if (TempData["SuccessfullyChanged"] != null)
+                        {
+                            @await Html.PartialAsync("StatusMessage", "The data has been successfully updated.")
+                        }
+
+                        <!-- User Settings Form Start -->
+                        <form asp-page-handler="BaseForm" method="post" enctype="multipart/form-data">
+
+                            <!-- Upload Image Start -->
+                            <h6 class="text-md text-primary-light mb-16">Profile Image</h6>
+                            <div class="mb-24 mt-16">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
+                                        <input asp-for="UserProfileModel.ProfileImage" type="file" id="imageUpload" accept=".png, .jpg, .jpeg" hidden="">
+                                        <label for="imageUpload" class="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle">
+                                            <iconify-icon icon="solar:camera-outline" class="icon"></iconify-icon>
+                                        </label>
+                                    </div>
+                                    <div class="avatar-preview">
+                                        @if (Model.CurrentUser.Profile.ProfileImage is null)
+                                        {
+                                            <div id="imagePreview" style="width: 150px; height: 150px; background-image: url('/assets/images/user-grid/user-grid-img13.png'); background-size: cover; background-position: center center;"></div>
+                                        }
+                                        else
+                                        {
+                                            <div id="imagePreview" style="width: 150px; height: 150px; background-image: url('@Model.CurrentUser.Profile.ProfileImage'); background-size: cover; background-position: center center;"></div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Upload Image End -->
+
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="mb-20">
+                                        <label asp-for="UserProfileModel.FullName" class="form-label fw-semibold text-primary-light text-sm mb-8">Full Name <span class="text-danger-600">*</span></label>
+                                        <input asp-for="UserProfileModel.FullName" class="form-control radius-8" placeholder="Enter full name" />
+                                        <span asp-validation-for="UserProfileModel.FullName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-20">
+                                        <label asp-for="UserProfileModel.Email" class="form-label fw-semibold text-primary-light text-sm mb-8">Email <span class="text-danger-600">*</span></label>
+                                        <input asp-for="UserProfileModel.Email" class="form-control radius-8" placeholder="Enter email address" />
+                                        <span asp-validation-for="UserProfileModel.Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-20">
+                                        <label asp-for="UserProfileModel.PhoneNumber" class="form-label fw-semibold text-primary-light text-sm mb-8">Phone number</label>
+                                        <input asp-for="UserProfileModel.PhoneNumber" class="form-control radius-8" placeholder="Enter phone number" />
+                                        <span asp-validation-for="UserProfileModel.PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-20">
+                                        <label asp-for="UserProfileModel.Passport" class="form-label fw-semibold text-primary-light text-sm mb-8">Passport</label>
+                                        <input asp-for="UserProfileModel.Passport" class="form-control radius-8" placeholder="Enter passport number" />
+                                        <span asp-validation-for="UserProfileModel.Passport" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-20">
+                                        <label asp-for="UserProfileModel.DrivingExperience" class="form-label fw-semibold text-primary-light text-sm mb-8">Driving experience</label>
+                                        <input asp-for="UserProfileModel.DrivingExperience" class="form-control radius-8" placeholder="Enter driving experience" />
+                                        <span asp-validation-for="UserProfileModel.DrivingExperience" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="mb-20">
+                                        <label asp-for="UserProfileModel.Description" class="form-label fw-semibold text-primary-light text-sm mb-8">Description</label>
+                                        <textarea asp-for="UserProfileModel.Description" class="form-control radius-8" placeholder="Write description..."></textarea>
+                                        <span asp-validation-for="UserProfileModel.Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center gap-3">
+                                <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                        <!-- User Settings Form End -->
+                    </div>
+
+                    <!-- User Password Form Start-->
+                    <div class="tab-pane @(TempData["SuccessfullyPasswordChanged"] != null || TempData["ErrorPasswordChanged"] != null ? "active":"fade")" id="pills-change-passwork" role="tabpanel" aria-labelledby="pills-change-passwork-tab" tabindex="0">
+
+                        @if (TempData["SuccessfullyPasswordChanged"] != null)
+                        {
+                            @await Html.PartialAsync("StatusMessage", "The password has been successfully updated.")
+                        }
+
+                        @if (TempData["ErrorPasswordChanged"] != null)
+                        {
+                            @await Html.PartialAsync("StatusMessage", $"Error. {TempData["ErrorPasswordChanged"]}")
+                        }
+
+                        <form asp-page-handler="ChangePassword" method="post">
+                            <div class="mb-20">
+                                <label for="your-password" class="form-label fw-semibold text-primary-light text-sm mb-8">New Password <span class="text-danger-600">*</span></label>
+                                <div class="position-relative">
+                                    <input asp-for="ChangePasswordModel.NewPassword" type="password" class="form-control radius-8" id="your-password" placeholder="Enter New Password*">
+                                    <span asp-validation-for="ChangePasswordModel.NewPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="mb-20">
+                                <label for="confirm-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Confirmed Password <span class="text-danger-600">*</span></label>
+                                <div class="position-relative">
+                                    <input asp-for="ChangePasswordModel.ConfirmPassword" type="password" class="form-control radius-8" id="confirm-password" placeholder="Confirm Password*">
+                                    <span asp-validation-for="ChangePasswordModel.ConfirmPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Change Password</button>
+                        </form>
+                    </div>
+                    <!-- User Password Form End -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    @* Для загрузки изображения *@
+    <script>
+        document.getElementById("imageUpload").addEventListener("change", function () {
+            var input = this;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imagePreview').style.backgroundImage = 'url(' + e.target.result + ')';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+    </script>
+}

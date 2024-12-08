@@ -1,0 +1,49 @@
+﻿<div class="sidebar-menu-area">
+    <ul class="sidebar-menu" id="sidebar-menu">
+
+
+        <li>
+            <a href="/">
+                <iconify-icon icon="mage:arrow-left-square-fill" class="menu-icon"></iconify-icon>
+                <span>Back</span>
+            </a>
+        </li>
+
+        @*Создать область для пользователей*@
+        @if (User.IsInRole("Customer"))
+        {
+            <li>
+                <a href="/customerDashboard">
+                    <iconify-icon icon="mage:dashboard-chart" class="menu-icon"></iconify-icon>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/reviews">
+                    <iconify-icon icon="mage:message-dots" class="menu-icon"></iconify-icon>
+                    <span>Reviews</span>
+                </a>
+            </li>
+        }
+
+        @if (User.IsInRole("Admin"))
+        {
+            <li>
+                <a href="/adminDashboard">
+                    <iconify-icon icon="mage:dashboard-chart" class="menu-icon"></iconify-icon>
+                    <span>Admin Dashboard</span>
+                </a>
+            </li>
+        }
+
+        @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+        {
+            <li>
+                <a href="/employeeDashboard">
+                    <iconify-icon icon="mage:edit" class="menu-icon"></iconify-icon>
+                    <span>Employee Dashboard</span>
+                </a>
+            </li>
+        }
+    </ul>
+</div>

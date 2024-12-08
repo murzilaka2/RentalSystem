@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - RentalSystem</title>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" sizes="16x16">
+    @await Html.PartialAsync("_Styles")
+</head>
+<body>
+    <aside class="sidebar">
+        <button type="button" class="sidebar-close-btn">
+            <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
+        </button>
+        <div>
+            <a href="/" class="sidebar-logo">
+                <img src="assets/images/logo.png" alt="site logo" class="light-logo">
+                <img src="assets/images/logo-light.png" alt="site logo" class="dark-logo">
+                <img src="assets/images/logo-icon.png" alt="site logo" class="logo-icon">
+            </a>
+        </div>
+        @await Html.PartialAsync("_NavBar")
+    </aside>
+    <main class="dashboard-main">
+        @await Html.PartialAsync("_Header")
+        <div class="dashboard-main-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+                @if (ViewData["Title"] != null)
+                {
+                    <h6 class="fw-semibold mb-0 responsive-text">@ViewData["Title"]</h6>
+                }
+                @if (@ViewData["CurrentPage"] != null)
+                {
+                    <ul class="d-flex align-items-center gap-2 ul-menu">
+                        <li class="fw-semibold mb-0 responsive-text">@Html.Raw(ViewData["CurrentPage"])</li>
+                    </ul>
+                }
+            </div>
+            @RenderBody()
+        </div>
+        @await Html.PartialAsync("_Footer")
+    </main>
+    @await Html.PartialAsync("_Scripts")
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

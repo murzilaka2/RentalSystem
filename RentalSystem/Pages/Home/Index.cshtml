@@ -1,0 +1,146 @@
+﻿@page "/"
+@using RentalSystem.Models
+@model IndexModel
+
+@{
+    Layout = "_HomeLayout";
+    ViewData["Title"] = "Home";
+    ViewBag.SortItems = new string[] { "Date", "Price", "Year", "Brand", "Model", "CurrentMileage", "MileageLimit" };
+}
+
+<main class="main">
+
+    @*Секция описания*@
+    <section class="section-box pt-50 background-body">
+        <div class="container">
+            <div class="row align-items-end">
+                <div class="col-md-9 mb-30 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                    <h4 class="title-svg neutral-1000 mb-15">Our Vehicle Fleet</h4>
+                    <p class="text-lg-medium text-bold neutral-500">Turning dreams into reality with versatile vehicles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @*Секция с каталогом*@
+    <section class="box-section block-content-tourlist background-body">
+        <div class="container">
+            <div class="box-content-main pt-20">
+                <div class="content-right">
+                    <div class="box-filters mb-25 pb-5 border-bottom border-1">
+                        <div class="row align-items-center">
+                            <div class="col-xl-4 col-md-4 mb-10 text-lg-start text-center">
+                                <div class="box-view-type">
+                                    <span class="text-sm-bold neutral-500 number-found">@Model.TotalCars cars found</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-8 col-md-8 mb-10 text-lg-end text-center">
+                                <!-- Фильтрация -->
+                                @await Html.PartialAsync("Utils/_ClientFilter", Model.Pagination)
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Cars list*@
+                    <div class="box-grid-tours wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
+                        <div class="row">
+                            @foreach (Car car in Model.Cars)
+                            {
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="card-journey-small background-card hover-up">
+                                        <div class="card-image">
+                                            <a href="getCar?id=@car.Id&returnUrl=@ViewContext.HttpContext.Request.PathAndQuery()">
+                                                <img src="@(car.Image ?? "assets/images/user-grid/car-default.jpg")" alt="@car.Model">
+                                            </a>
+                                        </div>
+                                        <div class="card-info">
+                                            <div class="card-rating">
+                                                <div class="card-left"></div>
+                                                <div class="card-right">
+                                                    <span class="rating text-xs-medium rounded-pill">@car.AverageRating 
+                                                        <span class="text-xs-medium neutral-500">(@car.ReviewCount reviews)</span></span>
+                                                </div>
+                                            </div>
+                                            <div class="card-title">
+                                                <a class="text-lg-bold neutral-1000 text-nowrap" href="getCar?id=@car.Id&returnUrl=@ViewContext.HttpContext.Request.PathAndQuery()">@car.Brand @car.Model</a>
+                                            </div>
+                                            <div class="card-program">
+                                                <div class="card-location">
+                                                    <p class="text-location text-sm-medium neutral-500">2356 Oakwood Drive, Suite 18, Warszaw</p>
+                                                </div>
+                                                <div class="card-facitlities">
+                                                    <p class="card-miles text-md-medium">@car.CurrentMileage miles</p>
+                                                    <p class="card-gear text-md-medium">@car.Transmission.GetDisplayName()</p>
+                                                    <p class="card-fuel text-md-medium">@car.EngineDisplacement. l engine</p>
+                                                    <p class="card-seat text-md-medium">@car.SeatsCount seats</p>
+
+                                                    @*Доделать иконки*@
+
+                                                    <p class="card-own text-md-medium tc">
+                                                        <img src="~/assetsClient/imgs/template/calendar.png" />
+                                                        @car.Year
+                                                    </p>
+                                                    <p class="card-own text-md-medium tc">
+                                                        <img src="~/assetsClient/imgs/template/paint-bucket.png" />
+                                                        @car.Color
+                                                    </p>
+                                                    <p class="card-own text-md-medium tc">
+                                                        <img src="~/assetsClient/imgs/template/vehicle.png" />
+                                                        @car.CarType
+                                                    </p>
+                                                    <p class="card-own text-md-medium tc">
+                                                        <img src="~/assetsClient/imgs/template/limited.png" />
+                                                        @car.MileageLimit miles
+                                                    </p>
+                                                </div>
+                                                <div class="endtime">
+                                                    <div class="card-price">
+                                                        <h6 class="text-lg-bold neutral-1000">$@car.Price</h6>
+                                                        <p class="text-md-medium neutral-500">/ day</p>
+                                                    </div>
+                                                    <div class="card-button">
+                                                        <a class="btn btn-gray" href="getCar?id=@car.Id&returnUrl=@ViewContext.HttpContext.Request.PathAndQuery()">Book Now</a></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Пагинация -->
+                    @await Html.PartialAsync("Utils/_ClientPagination", Model.Pagination)
+                </div>
+
+                <div class="content-left order-lg-first">
+                    <div class="sidebar-left border-1 background-body">
+                        <div class="box-filters-sidebar">
+                            <div class="block-filter border-1">
+                                <h6 class="text-lg-bold item-collapse neutral-1000">Show on map</h6>
+                                <div class="box-collapse scrollFilter mb-15">
+                                    <div class="pt-0">
+                                        <div class="box-map-small">
+                                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d16443.640075558254!2d21.026193743451906!3d52.218645721873266!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecd8244fdcebd%3A0xb85154ecc5453e10!2sHala%20Koszyki!5e0!3m2!1suk!2sua!4v1730366439015!5m2!1suk!2sua"
+                                                    width="100%" height="160" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @await Html.PartialAsync("Utils/_ClientFilterSidebar", Model.Pagination)
+
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+<script>
+    function updateValue(value) {
+        document.getElementById('sliderValue').textContent = value;
+    }
+</script>

@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "_Layout";
+    string currentUrl = ViewContext.HttpContext.Request.Path;
+}
+
+@* Мастер страница для Админа. Прописывем свои пункты меню и разделы. *@
+<ul class="nav button-tab nav-pills mb-16" id="pills-tab-four" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a href="/adminDashboard" class="nav-link d-flex align-items-center gap-2 fw-semibold text-primary-light radius-4 px-16 py-10 @(currentUrl == "/adminDashboard" ? "active" : "")" data-bs-target="#pills-button-icon-home" role="tab" aria-controls="pills-button-icon-home">
+            <iconify-icon icon="solar:diagram-down-bold" class="text-xl"></iconify-icon>
+            <span class="line-height-1">Admin Dashboard</span>
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a href="/adminDashboard/users" class="nav-link d-flex align-items-center gap-2 fw-semibold text-primary-light radius-4 px-16 py-10 @(currentUrl == "/adminDashboard/users" ? "active" : "")" data-bs-target="#pills-button-icon-home" role="tab" aria-controls="pills-button-icon-home">
+            <iconify-icon icon="solar:accessibility-line-duotone" class="text-xl"></iconify-icon>
+            <span class="line-height-1">Users</span>
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a href="/adminDashboard/cars" class="nav-link d-flex align-items-center gap-2 fw-semibold text-primary-light radius-4 px-16 py-10 @(currentUrl == "/adminDashboard/cars" ? "active" : "")" data-bs-target="#pills-button-icon-home" role="tab" aria-controls="pills-button-icon-home">
+            <iconify-icon icon="solar:bus-bold" class="text-xl"></iconify-icon>
+            <span class="line-height-1">Cars</span>
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a href="/adminDashboard/rentalCar" class="nav-link d-flex align-items-center gap-2 fw-semibold text-primary-light radius-4 px-16 py-10 @(currentUrl == "/adminDashboard/rentalCar" ? "active" : "")" data-bs-target="#pills-button-icon-home" role="tab" aria-controls="pills-button-icon-home">
+            <iconify-icon icon="solar:document-add-bold" class="text-xl"></iconify-icon>
+            <span class="line-height-1">Rental cars</span>
+        </a>
+    </li>
+</ul>
+
+
+@RenderBody()
+
+@await RenderSectionAsync("Scripts", required: false)

@@ -1,0 +1,129 @@
+﻿@page "/adminDashboard/rentalCar"
+@using DomainLayer.Models
+@model RentalSystem.Pages.Admin.RentalCars.RentalCarModel
+@{
+    ViewData["Title"] = "Rental Cars";
+    ViewData["CurrentPage"] = "<a href='/adminDashboard'>Admin Dashboard</a> / Rental Cars";
+    ViewBag.SortItems = new string[] { "StartDate", "EndDate", "Price", "Brand", "Model" };
+}
+
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+
+        <!-- Фильтрация -->
+        @await Html.PartialAsync("Utils/_RentalFilter", Model.Pagination)
+
+        <a href="/adminDashboard/addCar" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
+            Add New Car
+        </a>
+    </div>
+    <div class="card-body p-24">
+        <div class="table-responsive scroll-sm">
+
+            @if (TempData["SuccessfullyDeleted"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", TempData["SuccessfullyDeleted"])
+            }
+            @if (TempData["Error"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", $"Error. {TempData["Error"]}")
+            }
+
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Brand</th>
+                        <th scope="col">Model</th>
+                        <th scope="col">Rental Status</th>
+                        <th scope="col">Starts</th>
+                        <th scope="col">Ends</th>
+                        <th scope="col">Rental Email</th>
+                        <th scope="col">Rental Full Name</th>
+                        <th scope="col">Start Mileage</th>
+                        <th scope="col">End Mileage</th>
+                        <th scope="col">Price</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Rental rental in Model.Rentals)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="@(rental.Car.Image ?? "assets/images/user-grid/car-default.jpg")" alt="@rental.Car.Model" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
+                                    <div class="flex-grow-1">
+                                        <span class="text-md mb-0 fw-normal text-secondary-light">@rental.Car.Brand</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="text-md mb-0 fw-normal text-secondary-light">@rental.Car.Model</span></td>
+
+                            <td>
+                                @if (rental.Status == DomainLayer.Models.RentalHistoryStatus.Active)
+                                {
+                                    <span class="badge bg-success">@rental.Status </span>
+                                }
+                                else if (rental.Status == DomainLayer.Models.RentalHistoryStatus.Completed)
+                                {
+                                    <span class="badge bg-warning">@rental.Status </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">@rental.Status </span>
+                                }
+                            </td>
+
+
+                            <td>@rental.StartDate.ToShortDateString()</td>
+                            @if (@rental.EndDate != null)
+                            {
+                                <td>
+                                    @rental.EndDate.Value.ToShortDateString()
+                                </td>
+                            }
+                            else
+                            {
+                                <td>In rent</td>
+                            }
+                            <td>@rental.User.Email</td>
+                            <td>@rental.User.FullName</td>
+                            <td>@rental.StartMileage</td>
+                            @if (rental.EndMileage is null)
+                            {
+                                <td>-</td>
+                            }
+                            else
+                            {
+                                <td>@rental.EndMileage</td>
+                            }
+                            <td>@rental.Car.Price</td>
+                            <td class="text-center">
+                                <div class="d-flex align-items-center gap-10 justify-content-center">
+                                    <a href="adminDashboard/updateRental?id=@rental.Id&returnUrl=@ViewContext.HttpContext.Request.PathAndQuery()" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
+                                        <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
+                                    </a>
+                                    <form method="post"
+                                          asp-page-handler="Delete"
+                                          asp-route-id="@rental.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()"
+                                          onsubmit="return confirm('Are you sure you want to remove this vehicle?');">
+                                        <button type="submit"
+                                                class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium
+                                       w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
+                                            <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Пагинация -->
+        @await Html.PartialAsync("Utils/_Pagination", Model.Pagination)
+
+    </div>
+</div>

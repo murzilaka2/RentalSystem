@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\carsImages\" />
+    <Folder Include="wwwroot\assets\usersImages\" />
+    <Folder Include="wwwroot\lib\jquery-ajax-unobtrusive\dist\" />
+    <Folder Include="wwwroot\uploads\cars\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DomainLayer\DomainLayer.csproj" />
+    <ProjectReference Include="..\InfrastructureLayer\InfrastructureLayer.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,39 @@
+﻿@using RentalSystem.Models
+@model PaginationModel
+
+<form method="get" class="d-flex align-items-center flex-wrap gap-3">
+    <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
+    <select name="pageSize" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+        @foreach (var pageSize in Model.PageSizes)
+        {
+            if (Model.PageSize == pageSize)
+            {
+                <option value="@pageSize" selected>@pageSize</option>
+            }
+            else
+            {
+                <option value="@pageSize">@pageSize</option>
+            }
+        }
+    </select>
+
+    <div class="navbar-search">
+        <input type="text" class="bg-base h-40-px w-auto" name="filter" value="@Model.Filter" placeholder="Search">
+    </div>
+    <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+        @foreach (var selectedItem in Model.SelectOptions)
+        {
+            if (Model.Status == selectedItem)
+            {
+                <option value="@selectedItem" selected>@selectedItem</option>
+            }
+            else
+            {
+                <option value="@selectedItem">@selectedItem</option>
+            }
+        }
+    </select>
+</form>
+
+
+

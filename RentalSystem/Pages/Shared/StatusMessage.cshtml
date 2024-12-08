@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Components
+@model string
+
+@{
+    var statusMessageClass = !string.IsNullOrEmpty(Model) && Model.StartsWith("Error") ? "danger" : "success";
+}
+
+@if (!string.IsNullOrEmpty(Model))
+{
+    <div class="alert bg-light alert-dismissible show text-@statusMessageClass" role="alert">
+        @((MarkupString)Model)
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}

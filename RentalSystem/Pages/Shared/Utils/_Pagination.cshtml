@@ -1,0 +1,25 @@
+﻿@using RentalSystem.Models
+@model PaginationModel
+
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
+    <span>Showing @Model.FirstItemIndex to @Model.LastItemIndex of @Model.TotalItems entries</span>
+    <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+            <a class="page-link" href="@($"{Model.PageUrl}?page={Model.Page - 1}&filter={Model.Filter}&status={Model.Status}&pageSize={Model.PageSize}")">&laquo;</a>
+        </li>
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.Page ? "active" : "")">
+                <a class="page-link" href="@($"{Model.PageUrl}?page={i}&filter={Model.Filter}&status={Model.Status}&pageSize={Model.PageSize}")">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+            <a class="page-link" href="@($"{Model.PageUrl}?page={Model.Page + 1}&filter={Model.Filter}&status={Model.Status}&pageSize={Model.PageSize}")">&raquo;</a>
+        </li>
+    </ul>
+</div>
+
+
+
