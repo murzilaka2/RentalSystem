@@ -1,3 +1,5 @@
+using DomainLayer.Interfaces;
+using DomainLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RentalSystem.Interfaces;
@@ -10,6 +12,7 @@ namespace RentalSystem.Pages.Admin.Cars
     public class UpdateCarModel : PageModel
     {
         private readonly ICar _cars;
+        private readonly IDealer _dealers;
         private readonly IWebHostEnvironment _environment;
 
         [BindProperty]
@@ -18,16 +21,19 @@ namespace RentalSystem.Pages.Admin.Cars
         [BindProperty]
         public CarViewModel CarModel { get; set; }
         public Car CurrentCar { get; set; }
+        public IEnumerable<Dealer> Dealers { get; set; }
 
-        public UpdateCarModel(ICar cars, IWebHostEnvironment environment)
+        public UpdateCarModel(ICar cars, IDealer dealers, IWebHostEnvironment environment)
         {
             _cars = cars;
+            _dealers = dealers;
             _environment = environment;
         }
 
         public async Task OnGetAsync(int id, string returnUrl)
         {
             ReturnUrl = returnUrl;
+            Dealers = await _dealers.GetDealersAsync();
             CurrentCar = await _cars.GetCarAsync(id);
             FillCarProfile();
         }
@@ -53,7 +59,8 @@ namespace RentalSystem.Pages.Admin.Cars
                 CurrentMileage = CarModel.CurrentMileage,
                 EngineDisplacement = CarModel.EngineDisplacement ?? 2.0,
                 MileageLimit = CarModel.MileageLimit,
-                Model = CarModel.Model
+                Model = CarModel.Model,
+                DealerId = CarModel.DealerId
             };
 
             //Проверка загруженного изображения
@@ -112,7 +119,8 @@ namespace RentalSystem.Pages.Admin.Cars
                 Price = CurrentCar.Price,
                 SeatsCount = CurrentCar.SeatsCount,
                 Transmission = CurrentCar.Transmission,
-                Year = CurrentCar.Year
+                Year = CurrentCar.Year,
+                DealerId = CurrentCar.DealerId
             };
         }
 
@@ -155,6 +163,7 @@ namespace RentalSystem.Pages.Admin.Cars
 
             public string? DisplayImage { get; set; }
             public IFormFile? Image { get; set; }
+            public int DealerId { get; set; }
         }
     }
 }

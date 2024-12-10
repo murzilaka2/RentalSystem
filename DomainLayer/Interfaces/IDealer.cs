@@ -9,6 +9,6 @@ namespace DomainLayer.Interfaces
         Task<Dealer?> GetDealerAsync(int id);
         Task<bool> AddDealerAsync(Dealer dealer);
         Task<bool> UpdateDealerAsync(Dealer dealer);
-        Task<bool> RemoveDealerAsync(Dealer dealer);
+        Task<bool> RemoveDealerAsync(int id);
     }
 }

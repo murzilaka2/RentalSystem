@@ -17,7 +17,7 @@ namespace InfrastructureLayer.Repository
 
         public async Task<IEnumerable<Dealer>> GetDealersAsync()
         {
-            string query = "SELECT [Id],[FirstName],[LastName] FROM [Dealers]";
+            string query = "SELECT [Id],[FirstName],[LastName],[WorkExperience],[Mobile],[Email] FROM [Dealers]";
             List<Dealer> dealers = new List<Dealer>();
 
             await _queryBuilder.ExecuteQueryAsync(query, reader =>
@@ -28,7 +28,10 @@ namespace InfrastructureLayer.Repository
                     {
                         Id = reader.GetInt32(0),
                         FirstName = reader.GetString(1),
-                        LastName = reader.GetString(2)
+                        LastName = reader.GetString(2),
+                        WorkExperience = reader.GetInt32(3),
+                        Mobile = reader.GetString(4),
+                        Email = reader.GetString(5),
                     };
                     dealers.Add(dealer);
                 }
@@ -154,14 +157,14 @@ namespace InfrastructureLayer.Repository
 
             return dealer;
         }
-        public async Task<bool> RemoveDealerAsync(Dealer dealer)
+        public async Task<bool> RemoveDealerAsync(int id)
         {
             string query = @"
             DELETE FROM [Dealers]
             WHERE [Id] = @Id;";
 
             SqlParameter[] parameters = {
-                new SqlParameter("@Id", SqlDbType.Int) { Value = dealer.Id }
+                new SqlParameter("@Id", SqlDbType.Int) { Value = id }
             };
 
             int rowsAffected = await _queryBuilder.ExecuteQueryAsync(query, parameters);

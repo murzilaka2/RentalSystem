@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,5 +17,9 @@ namespace DomainLayer.Models
         public string Email { get; set; }
         public string? WhatsApp { get; set; }
         public string? Fax { get; set; }
+        public string PhotoUrl => "assets/images/user-list/user-list1.png";
+
+        [NotMapped]
+        public string SelectName => $"{FirstName} {LastName}";
     }
 }

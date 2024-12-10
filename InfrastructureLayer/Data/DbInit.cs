@@ -219,6 +219,17 @@ namespace RentalSystem.Data
                 WorkExperience = 5,
             });
 
+            await dealers.AddDealerAsync(new Dealer
+            {
+                Email = "jacob-brown@gmail.com",
+                Fax = "1-321-432-3190",
+                FirstName = "Jacob",
+                LastName = "Brown",
+                Mobile = "1-321-432-3190",
+                WhatsApp = "1-321-432-3190",
+                WorkExperience = 2,
+            });
+
 
             //Cars
             Car camry = new Car

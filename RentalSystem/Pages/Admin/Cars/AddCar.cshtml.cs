@@ -26,7 +26,6 @@ namespace RentalSystem.Pages.Admin.Cars
         public IEnumerable<Dealer> Dealers { get; set; }
         public async Task OnGetAsync()
         {
-            //Реализовать добавление авто, с возможностью выбора дилера
             Dealers = await _dealers.GetDealersAsync();
         }
 
@@ -50,7 +49,8 @@ namespace RentalSystem.Pages.Admin.Cars
                 CurrentMileage = CarModel.CurrentMileage,
                 EngineDisplacement = CarModel.EngineDisplacement ?? 2.0,
                 MileageLimit = CarModel.MileageLimit,
-                Model = CarModel.Model
+                Model = CarModel.Model,
+                DealerId = CarModel.DealerId
             };
 
             //Проверка загруженного изображения
@@ -121,6 +121,7 @@ namespace RentalSystem.Pages.Admin.Cars
 
             public string? DisplayImage { get; set; }
             public IFormFile? Image { get; set; }
+            public int DealerId { get; set; }
         }
     }
 }

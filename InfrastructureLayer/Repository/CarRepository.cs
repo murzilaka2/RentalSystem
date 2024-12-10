@@ -269,7 +269,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
             string query = @"
             SELECT [c].[Id], [c].[Brand], [c].[Model], [c].[Color], [c].[Image], [c].[EngineDisplacement], 
                    [c].[Year], [c].[CarType], [c].[Transmission], [c].[CurrentMileage], 
-                   [c].[MileageLimit], [c].[SeatsCount], [c].[Price],
+                   [c].[MileageLimit], [c].[SeatsCount], [c].[Price], [c].[DealerId],
                    [d].[Id] AS DealerId, 
                    [d].[FirstName] AS DealerFirstName,
                    [d].[LastName] AS DealerLastName,
@@ -301,16 +301,17 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
                         MileageLimit = reader.GetInt32(10),
                         SeatsCount = reader.GetInt32(11),
                         Price = reader.GetDecimal(12),
+                        DealerId = reader.GetInt32(13),
                         Dealer = new Dealer 
                         {
-                            Id = reader.IsDBNull(13) ? 0 : reader.GetInt32(13),
-                            FirstName = reader.IsDBNull(14) ? null : reader.GetString(14),
-                            LastName = reader.IsDBNull(15) ? null : reader.GetString(15),
-                            WorkExperience = reader.GetInt32(16),
-                            Mobile = reader.IsDBNull(17) ? null : reader.GetString(17),
-                            Email = reader.IsDBNull(18) ? null : reader.GetString(18),
-                            WhatsApp = reader.IsDBNull(19) ? null : reader.GetString(19),
-                            Fax = reader.IsDBNull(20) ? null : reader.GetString(20)
+                            Id = reader.IsDBNull(14) ? 0 : reader.GetInt32(14),
+                            FirstName = reader.IsDBNull(15) ? null : reader.GetString(15),
+                            LastName = reader.IsDBNull(16) ? null : reader.GetString(16),
+                            WorkExperience = reader.GetInt32(17),
+                            Mobile = reader.IsDBNull(18) ? null : reader.GetString(18),
+                            Email = reader.IsDBNull(19) ? null : reader.GetString(19),
+                            WhatsApp = reader.IsDBNull(20) ? null : reader.GetString(20),
+                            Fax = reader.IsDBNull(21) ? null : reader.GetString(21)
                         }
                     };
                 }

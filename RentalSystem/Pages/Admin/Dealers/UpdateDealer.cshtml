@@ -1,0 +1,94 @@
+﻿@page "/adminDashboard/updateDealer"
+@model RentalSystem.Pages.Admin.Dealers.UpdateDealerModel
+@{
+    ViewData["Title"] = "Update Dealer";
+    ViewData["CurrentPage"] = "<a href='/adminDashboard'>Admin Dashboard</a> / <a href='/adminDashboard/dealers'>Dealers</a> / Update Dealer";
+}
+
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+
+            <form asp-page-handler="AddDealer" method="post">
+
+                <input asp-for="DealerModel.Id" type="hidden" />
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="DealerModel.FirstName" class="form-label fw-semibold text-primary-light text-sm mb-8">First Name <span class="text-danger-600">*</span></label>
+                            <input asp-for="DealerModel.FirstName" class="form-control radius-8" placeholder="Enter first name" />
+                            <span asp-validation-for="DealerModel.FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="DealerModel.LastName" class="form-label fw-semibold text-primary-light text-sm mb-8">Last Name <span class="text-danger-600">*</span></label>
+                            <input asp-for="DealerModel.LastName" class="form-control radius-8" placeholder="Enter last name" />
+                            <span asp-validation-for="DealerModel.LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="DealerModel.WorkExperience" class="form-label fw-semibold text-primary-light text-sm mb-8">Work experience</label>
+                            <input asp-for="DealerModel.WorkExperience" class="form-control radius-8" placeholder="Enter work experience" />
+                            <span asp-validation-for="DealerModel.WorkExperience" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="DealerModel.Mobile" class="form-label fw-semibold text-primary-light text-sm mb-8">Mobile</label>
+                            <input asp-for="DealerModel.Mobile" class="form-control radius-8" placeholder="Enter phone number" />
+                            <span asp-validation-for="DealerModel.Mobile" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="DealerModel.Email" class="form-label fw-semibold text-primary-light text-sm mb-8">Email</label>
+                            <input asp-for="DealerModel.Email" class="form-control radius-8" placeholder="Enter email" />
+                            <span asp-validation-for="DealerModel.Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="DealerModel.WhatsApp" class="form-label fw-semibold text-primary-light text-sm mb-8">WhatsApp</label>
+                            <input asp-for="DealerModel.WhatsApp" class="form-control radius-8" placeholder="Enter whatsApp" />
+                            <span asp-validation-for="DealerModel.WhatsApp" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="DealerModel.Fax" class="form-label fw-semibold text-primary-light text-sm mb-8">Fax</label>
+                            <input asp-for="DealerModel.Fax" class="form-control radius-8" placeholder="Enter fax" />
+                            <span asp-validation-for="DealerModel.Fax" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-center gap-3">
+                    <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                        Save
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    @*Переопределение валидации на стороне клиента*@
+    <script>
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        }
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+        }
+    </script>
+}
