@@ -65,13 +65,8 @@ namespace RentalSystem.Pages.Auth
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
-<<<<<<< Updated upstream
-                    //Все прошло успешно, отправляем на защищеную страницу!
+
                     return Redirect(ReturnUrl ?? "/");
-=======
-                   
-                    return Redirect("/");
->>>>>>> Stashed changes
                 }
                 else
                 {
