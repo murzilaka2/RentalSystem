@@ -99,13 +99,20 @@ namespace InfrastructureLayer.Repository
             return count > 0;
         }
 
-
         public async Task<bool> RemoveWishListAsync(WishList wishList)
         {
             string queryDelete = "DELETE FROM [WishesList] WHERE [CarId] = @CarId AND [UserId] = @UserId";
             SqlParameter carIdParam = new SqlParameter("@CarId", SqlDbType.Int) { Value = wishList.CarId };
             SqlParameter userIdParam = new SqlParameter("@UserId", SqlDbType.Int) { Value = wishList.UserId };
             int rowsAffected = await _queryBuilder.ExecuteQueryAsync(queryDelete, carIdParam, userIdParam);
+            return rowsAffected > 0;
+        }
+
+        public async Task<bool> RemoveWishListAsync(int id)
+        {
+            string queryDelete = "DELETE FROM [WishesList] WHERE [Id] = @Id";
+            SqlParameter wishIdParam = new SqlParameter("@Id", SqlDbType.Int) { Value = id };
+            int rowsAffected = await _queryBuilder.ExecuteQueryAsync(queryDelete, wishIdParam);
             return rowsAffected > 0;
         }
     }

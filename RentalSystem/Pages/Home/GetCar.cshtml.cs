@@ -34,6 +34,9 @@ namespace RentalSystem.Pages.Home
         public ReviewViewModel Review { get; set; }
 
         [BindProperty]
+        public TestDriveViewModel TestDrive { get; set; }
+
+        [BindProperty]
         public string? ReturnUrl { get; set; }
         public GetCarModel(ICar cars, IReview review, IWishList wishList)
         {
@@ -48,10 +51,14 @@ namespace RentalSystem.Pages.Home
             CurrentCar = await _cars.GetCarAsync(id);
             string? userStringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int userId = 0;
-            if (userStringId == null || !int.TryParse(userStringId, out userId))
+            if (userStringId is null)
+            {
+                IsCarInWishList = false;
+            }
+            else if (!int.TryParse(userStringId, out userId))
             {
                 Error();
-                return Redirect("/getCar?id=" + RentCar.CarId);
+                return Redirect("/getCar?id=" + CurrentCar.Id);
             }
             IsCarInWishList = await _wishList.IsCarInWishListAsync(new WishList
             {
@@ -67,7 +74,6 @@ namespace RentalSystem.Pages.Home
             TempData["Info"] = $"Right now there are {id} people watching this car.";
             return Page();
         }
-
         public async Task<IActionResult> OnPostRentFormAsync([FromServices] IRental rentalService)
         {
             if (RentCar.TotalToPay > 0)
@@ -107,7 +113,6 @@ namespace RentalSystem.Pages.Home
             }
             return Redirect("/getCar?id=" + RentCar.CarId);
         }
-
         public async Task<IActionResult> OnPostReviewFormAsync()
         {
             CurrentCar = await _cars.GetCarAsync(Review.CarId);
@@ -141,13 +146,15 @@ namespace RentalSystem.Pages.Home
 
             return Redirect("/getCar?id=" + CurrentCar.Id + "#reviewArea");
         }
-
         public async Task<IActionResult> OnPostWishListFormAsync()
-        {
-           
-            string userStringId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value ?? null;
+        {          
+            string? userStringId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? null;
             int userId = 0;
-            if (userStringId == null || !int.TryParse(userStringId, out userId))
+            if (userStringId == null)
+            {
+                return Redirect("/login?returnUrl=getCar?id=" + RentCar.CarId);
+            }
+            else if (!int.TryParse(userStringId, out userId))
             {
                 Error();
                 return Redirect("/getCar?id=" + RentCar.CarId);
@@ -205,6 +212,25 @@ namespace RentalSystem.Pages.Home
             return Redirect("/getCar?id=" + RentCar.CarId);
         }
 
+        public async Task<IActionResult> OnPostTestDriveFormAsync([FromServices] ITestDrive testDrive)
+        {
+            //Добавить объект TestDrive в базу данных
+            if (await testDrive.AddTestDriveAsync(new DomainLayer.Models.TestDrive
+            {
+                Name = TestDrive.Name,
+                Phone = TestDrive.Phone,    
+                Date = TestDrive.Date,
+                CarId = TestDrive.CarId              
+            }))
+            {
+                Success("Your request has been sent successfully. Expect a call from the manager.", "WishSuccess");
+            }
+            else
+            {
+                Error(name: "WishError");
+            }
+            return Redirect("/getCar?id=" + TestDrive.CarId);
+        }
         private void Error(string? message = null, string name = "Error")
         {
             if (message == null)
@@ -237,6 +263,14 @@ namespace RentalSystem.Pages.Home
 
             [Required(ErrorMessage = "Write your review about this auto.")]
             public string? Message { get; set; }
+        }
+
+        public class TestDriveViewModel
+        {
+            public int CarId { get; set; }
+            public string Name { get; set; }
+            public string Phone { get; set; }
+            public DateTime Date { get; set; }
         }
     }
 }

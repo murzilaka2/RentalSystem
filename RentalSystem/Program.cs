@@ -16,6 +16,12 @@ System.Data.SqlClient
 1. https://yesicon.app/mage  (Пример использования: <iconify-icon icon="mage:image-plus" class="text-xl"></iconify-icon>  mage:image-plus)
 2. https://yesicon.app/solar (Пример использования: <iconify-icon icon="solar:diagram-down-bold" class="text-xl"></iconify-icon> solar:bus-bold)
 
+0. На странице Employee - отобразить все записи на тест драйв с удалением.
+1. Сделать страницу с выводом диллеров и их количество авто, с возможностью
+просмотро автомобилей определенного диллера. (Toyota и т.д.)
+2. Создать страницу с контактами и реализовать возможность отправки писем на почту,
+которую может указать админ в настройках сайта.
+
 Реализовать для админа:
 
 3. Отображение арендованных / не арендованных машин.
@@ -40,6 +46,7 @@ builder.Services.AddScoped<IRental, RentalRepository>();
 builder.Services.AddScoped<IReview, ReviewRepository>();
 builder.Services.AddScoped<IDealer, DealerRepository>();
 builder.Services.AddScoped<IWishList, WishListRepository>();
+builder.Services.AddScoped<ITestDrive, TestDriveRepository>();
 
 var app = builder.Build();
 

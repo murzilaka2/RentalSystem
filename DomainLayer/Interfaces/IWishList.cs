@@ -13,6 +13,7 @@ namespace DomainLayer.Interfaces
         Task<List<WishList>> GetWishesListWithCarsAsync(int userId);
         Task<bool> AddWishListAsync(WishList wishList);
         Task<bool> RemoveWishListAsync(WishList wishList);
+        Task<bool> RemoveWishListAsync(int id);
         Task<bool> IsCarInWishListAsync(WishList wishList);
     }
 }

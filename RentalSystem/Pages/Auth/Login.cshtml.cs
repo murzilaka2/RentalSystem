@@ -21,11 +21,15 @@ namespace RentalSystem.Pages.Auth
         [MinLength(6)]
         public string? Password { get; set; }
 
-        public IActionResult OnGet()
+        [BindProperty]
+        public string? ReturnUrl { get; set;}
+
+        public IActionResult OnGet(string? returnUrl)
         {
+            ReturnUrl = returnUrl;
             if (User.Identity.IsAuthenticated)
             {
-                return Redirect("/");
+                return Redirect(ReturnUrl ?? "/");
             }
             return Page();
         }
@@ -62,7 +66,7 @@ namespace RentalSystem.Pages.Auth
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
                     //Все прошло успешно, отправляем на защищеную страницу!
-                    return Redirect("/");
+                    return Redirect(ReturnUrl ?? "/");
                 }
                 else
                 {

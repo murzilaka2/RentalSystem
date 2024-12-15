@@ -20,5 +20,18 @@ namespace RentalSystem.Pages.Shared.Pages
             Wishes = await _wishList.GetWishesListWithCarsAsync(int.Parse(userId));
             return Page();
         }
+
+        public async Task<IActionResult> OnPostRemoveAsync(int id, string returnUrl)
+        {
+            if (id > 0 && await _wishList.RemoveWishListAsync(id))
+            {
+                TempData["SuccessfullyDeleted"] = "Auto has been successfully removed from the wish list.";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to remove the car. Try again later.";
+            }
+            return Redirect(returnUrl);
+        }
     }
 }

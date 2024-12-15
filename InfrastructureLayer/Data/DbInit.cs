@@ -162,6 +162,19 @@ namespace RentalSystem.Data
                     );                                                
                     """;
                 await command.ExecuteNonQueryAsync();
+
+                //Создание таблицы для хранения заявок на аренду
+                command.CommandText = """
+                    CREATE TABLE [TestDrives] (
+                        [Id] INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+                        [Name] NVARCHAR(MAX) NOT NULL,
+                        [Phone] NVARCHAR(MAX) NOT NULL,
+                        [Date] DATETIME NOT NULL,
+                        [CarId] INT NOT NULL,
+                        CONSTRAINT [FK_TestDrives_Car] FOREIGN KEY ([CarId]) REFERENCES [Cars]([Id]),
+                    );                                                                    
+                    """;
+                await command.ExecuteNonQueryAsync();
             }
         }
         public static async Task InitializeAsync(IUser users, IRole roles, ICar cars, IDealer dealers)
