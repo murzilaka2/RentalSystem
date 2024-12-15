@@ -8,9 +8,9 @@ namespace DomainLayer.Models
 {
     public enum RentalStatus
     {
-        Active = 0, //Готова к аренде
-        InRent, //Находится в аренде
-        UnderRepair, //Находится в ремонте
-        Reserved //Забронирована
+        Active = 0, 
+        InRent, 
+        UnderRepair, 
+        Reserved 
     }
 }

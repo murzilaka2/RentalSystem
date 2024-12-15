@@ -1,4 +1,5 @@
 ﻿using RentalSystem.Interfaces;
+using DomainLayer;
 
 namespace RentalSystem.RazorHelpers
 {

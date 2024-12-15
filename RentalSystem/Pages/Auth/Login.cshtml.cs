@@ -50,7 +50,7 @@ namespace RentalSystem.Pages.Auth
                         ModelState.AddModelError("", "User not found. Try again later.");
                         return Page();
                     }
-                    //Добавление куки
+                   
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, currentUser.Id.ToString()),
@@ -65,8 +65,13 @@ namespace RentalSystem.Pages.Auth
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
+<<<<<<< Updated upstream
                     //Все прошло успешно, отправляем на защищеную страницу!
                     return Redirect(ReturnUrl ?? "/");
+=======
+                   
+                    return Redirect("/");
+>>>>>>> Stashed changes
                 }
                 else
                 {
@@ -75,7 +80,6 @@ namespace RentalSystem.Pages.Auth
             }
             return Page();
         }
-
         public async Task<JsonResult> OnGetIsEmailInUseAsync([FromServices] IUser users, string Email)
         {
             if (!await users.IsEmailExistsAsync(Email))

@@ -8,9 +8,8 @@ namespace DomainLayer.Models
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        //Пробег в начале аренды
         public double StartMileage { get; set; } 
-        //Пробег в конце аренды
+
         public double? EndMileage { get; set; }
 
         public bool IsGPSNavigationSystem { get; set; } 

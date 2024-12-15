@@ -5,6 +5,7 @@ using RentalSystem.Services;
 using System.Data.SqlClient;
 using System.Data;
 using DomainLayer.Models;
+using System.Diagnostics;
 
 namespace RentalSystem.Repository
 {
@@ -100,7 +101,7 @@ namespace RentalSystem.Repository
 
             if (userId > 0)
             {
-                // Если профиль пользователя существует, добавляем его
+                
                 if (user.Profile != null)
                 {
                     string profileQuery = @"
@@ -276,6 +277,66 @@ namespace RentalSystem.Repository
             }, new SqlParameter("@Email", SqlDbType.NVarChar) { Value = email });
             return profileImage;
         }
+        public async Task<(IEnumerable<User> Users, int TotalCount)> GetCustomersWithProfileAsync(FilterModel filterModel)
+        {
+            var users = new List<User>();
+            int totalCount = 0;
+
+            string query = @"
+    SELECT u.Id AS UserId, u.Email, u.FullName, u.RoleId, 
+           p.Id AS ProfileId, p.PhoneNumber, p.Passport, 
+           p.DrivingExperience, p.Description, p.ProfileImage
+    FROM Users u
+    LEFT JOIN UserProfiles p ON u.Id = p.UserId
+    WHERE (@Search IS NULL OR u.FullName LIKE '%' + @Search + '%')
+    ORDER BY u.Id
+    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+    SELECT COUNT(*)
+    FROM Users u
+    LEFT JOIN UserProfiles p ON u.Id = p.UserId
+    WHERE (@Search IS NULL OR u.FullName LIKE '%' + @Search + '%');";
+
+            await _queryBuilder.ExecuteQueryAsync(query, reader =>
+            {
+                while (reader.Read())
+                {
+                    var user = new User
+                    {
+                        Id = reader.GetInt32("UserId"),
+                        Email = reader.GetString("Email"),
+                        FullName = reader.IsDBNull("FullName") ? null : reader.GetString("FullName"),
+                        RoleId = reader.GetInt32("RoleId"),
+                        Profile = reader.IsDBNull("ProfileId")
+                                  ? null
+                                  : new UserProfile
+                                  {
+                                      Id = reader.GetInt32("ProfileId"),
+                                      PhoneNumber = reader.IsDBNull("PhoneNumber") ? null : reader.GetString("PhoneNumber"),
+                                      Passport = reader.IsDBNull("Passport") ? null : reader.GetString("Passport"),
+                                      DrivingExperience = reader.IsDBNull("DrivingExperience") ? 0 : reader.GetInt32("DrivingExperience"),
+                                      Description = reader.IsDBNull("Description") ? null : reader.GetString("Description"),
+                                      ProfileImage = reader.IsDBNull("ProfileImage") ? null : reader.GetString("ProfileImage"),
+                                      UserId = reader.GetInt32("UserId")
+                                  }
+                    };
+
+                    users.Add(user);
+                }
+
+                if (reader.NextResult() && reader.Read())
+                {
+                    totalCount = reader.GetInt32(0);
+                }
+            },
+            new SqlParameter("@Search", string.IsNullOrWhiteSpace(filterModel.Search) ? (object)DBNull.Value : filterModel.Search),
+            new SqlParameter("@Offset", (filterModel.Page - 1) * filterModel.PageSize),
+            new SqlParameter("@PageSize", filterModel.PageSize));
+
+            return (users, totalCount);
+        }
+
+
         public async Task<bool> SigInAsync(User user)
         {
             string query = "SELECT [Salt] FROM [Users] WHERE [Email] = @Email";
@@ -384,5 +445,120 @@ namespace RentalSystem.Repository
             new SqlParameter("@Id", SqlDbType.NVarChar) { Value = userId });
             return rowsAffected > 0;
         }
+
+        public async Task<(IEnumerable<User> Users, int TotalCount)> GetUsersAsync(FilterModel filterModel, string? roleFilter = null)
+        {
+            var users = new List<User>();
+            int totalCount = 0;
+
+            string query = @"
+                SELECT * FROM Users
+                WHERE (@RoleFilter IS NULL OR Role = @RoleFilter)
+                ORDER BY Id
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+                SELECT COUNT(*) FROM Users
+                WHERE (@RoleFilter IS NULL OR Role = @RoleFilter);";
+
+            await _queryBuilder.ExecuteQueryAsync(query, reader =>
+            {
+                while (reader.Read())
+                {
+                    users.Add(new User
+                    {
+                        Id = reader.GetInt32("Id"),
+                        FullName = reader.GetString("FullName"),
+                        Email = reader.GetString("Email"),
+                        RoleId = reader.GetInt32("RoleId"),
+                    });
+                }
+
+                if (reader.NextResult() && reader.Read())
+                {
+                    totalCount = reader.GetInt32(0);
+                }
+            },
+            new SqlParameter("@RoleFilter", string.IsNullOrWhiteSpace(roleFilter) ? (object)DBNull.Value : roleFilter),
+            new SqlParameter("@Offset", (filterModel.Page - 1) * filterModel.PageSize),
+            new SqlParameter("@PageSize", filterModel.PageSize));
+
+            return (users, totalCount);
+        }
+
+        public async Task<bool> SignInAsync(User user)
+        {
+            string query = "SELECT Password FROM Users WHERE Email = @Email";
+
+            string? storedPassword = await _queryBuilder.ExecuteScalarAsync<string>(
+                query,
+                new SqlParameter("@Email", user.Email)
+            );
+
+            return storedPassword == user.HashPassword;
+        }
+
+        public bool IsValidFilter(FilterModel filterModel)
+        {
+            if (filterModel == null) return false;
+
+            return filterModel.Page > 0 && filterModel.PageSize > 0;
+        }
+        public async Task<(IEnumerable<User> Users, int TotalCount)> GetAdminsAndEmployeesAsync(
+      FilterModel? filterModel, int page, int pageSize, string? roleFilter)
+        {
+            var users = new List<User>();
+            int totalCount = 0;
+
+            // Формування списку ролей для фільтрації
+            string roleCondition = "RoleId IN (1, 2)";
+            if (!string.IsNullOrWhiteSpace(roleFilter))
+            {
+                roleCondition = $"RoleId = @RoleFilter";
+            }
+
+            string query = $@"
+    SELECT Id, FullName, Email, RoleId FROM Users
+    WHERE {roleCondition}
+    ORDER BY Id
+    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+    SELECT COUNT(*) FROM Users
+    WHERE {roleCondition};";
+
+            var parameters = new List<SqlParameter>
+    {
+        new SqlParameter("@Offset", (page - 1) * pageSize),
+        new SqlParameter("@PageSize", pageSize)
+    };
+
+            if (!string.IsNullOrWhiteSpace(roleFilter))
+            {
+                parameters.Add(new SqlParameter("@RoleFilter", roleFilter));
+            }
+
+            await _queryBuilder.ExecuteQueryAsync(query, reader =>
+            {
+                while (reader.Read())
+                {
+                    users.Add(new User
+                    {
+                        Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                        FullName = reader.GetString(reader.GetOrdinal("FullName")),
+                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                        RoleId = reader.GetInt32(reader.GetOrdinal("RoleId")),
+                    });
+                }
+
+                if (reader.NextResult() && reader.Read())
+                {
+                    totalCount = reader.GetInt32(0);
+                }
+            }, parameters.ToArray());
+
+            return (users, totalCount);
+        }
+
+
+
     }
 }

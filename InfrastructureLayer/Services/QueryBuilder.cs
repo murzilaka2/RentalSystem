@@ -1,5 +1,6 @@
 ﻿using RentalSystem.Interfaces;
 using System.Data.SqlClient;
+using DomainLayer;
 
 namespace RentalSystem.Services
 {

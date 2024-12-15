@@ -1,3 +1,4 @@
+using DomainLayer;
 using DomainLayer.Interfaces;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
