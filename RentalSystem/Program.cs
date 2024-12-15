@@ -18,7 +18,6 @@ System.Data.SqlClient
 
 Реализовать для админа:
 
-2. Для страницы авто создать отдельную сущность для хранения цен на доп услуги. Они не связаны с авто, они идут отдельно.
 3. Отображение арендованных / не арендованных машин.
 4. Статистика какие машины арендуют (Отображаем на главное странице AdminDashBoard).
  */
@@ -40,6 +39,7 @@ builder.Services.AddScoped<ICar, CarRepository>();
 builder.Services.AddScoped<IRental, RentalRepository>();
 builder.Services.AddScoped<IReview, ReviewRepository>();
 builder.Services.AddScoped<IDealer, DealerRepository>();
+builder.Services.AddScoped<IWishList, WishListRepository>();
 
 var app = builder.Build();
 

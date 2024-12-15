@@ -33,7 +33,7 @@ namespace RentalSystem.Pages.Admin.Dealers
             Pagination = new PaginationModel(totalUsers, paginationModel.Page, paginationModel.PageSize,
                 Request.Path, paginationModel.Filter, paginationModel.Status)
             {
-                SelectOptions = new string[] {"Work Expirience"}
+                SelectOptions = new string[] {"Work Expirience", "First Name", "Last Name" }
             };
             return Page();
         }

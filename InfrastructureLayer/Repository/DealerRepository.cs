@@ -60,7 +60,15 @@ namespace InfrastructureLayer.Repository
         }
         public async Task<(IEnumerable<Dealer> Dealers, int TotalCount)> GetAllDealersAsync(FilterModel filterModel)
         {
-            string query = @"
+
+            string orderByColumn = filterModel.Status switch
+            {
+                "First Name" => "FirstName",
+                "Last Name" => "LastName",
+                _ => "WorkExperience"
+            };
+
+            string query = $@"
             WITH FilteredDealers AS (
                 SELECT 
                     d.[Id],
@@ -78,7 +86,7 @@ namespace InfrastructureLayer.Repository
                 *, 
                 COUNT(*) OVER() AS TotalCount
             FROM FilteredDealers
-            ORDER BY LastName, FirstName
+            ORDER BY {orderByColumn} DESC
             OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
             SqlParameter[] parameters = {

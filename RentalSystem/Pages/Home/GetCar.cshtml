@@ -4,7 +4,26 @@
 @model RentalSystem.Pages.Home.GetCarModel
 @{
     Layout = "_HomeLayout";
-    ViewData["Title"] = $"{Model.CurrentCar.Brand} {Model.CurrentCar.Model}";
+    string title = $"{Model.CurrentCar.Brand} {Model.CurrentCar.Model}";
+    string description = "Looking for a reliable and affordable car rental? Look no further! Our car rental service offers a wide selection of vehicles to suit every need, whether you're planning a road trip, need a car for business, or just want to explore the city.";
+    ViewData["Title"] = title;
+    string pageUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}{Request.QueryString}";
+}
+
+@section MetaTags {
+    <meta name="robots" content="max-image-preview:large">
+    <meta property="og:locale" content="en_En">
+    <meta property="og:url" content="@pageUrl">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="@title">
+    <meta property="og:description" content="@description">
+    <meta property="og:image" content="@Url.Content(Model.CurrentCar.Image)">
+    <meta property="article:publisher" content="https://www.facebook.com/">
+    <meta property="article:published_time" content="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssK");">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@title" />
+    <meta name="twitter:description" content="@description" />
+    <meta name="twitter:image" content="@Url.Content(Model.CurrentCar.Image)" />
 }
 
 @if (TempData["Error"] != null)
@@ -72,6 +91,19 @@
                         </h4>
                     </div>
                 </div>
+                @if (TempData["WishSuccess"] != null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        @TempData["WishSuccess"]
+                    </div>
+                }
+
+                @if (TempData["WishError"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @TempData["WishError"]
+                    </div>
+                }
             </div>
             <div class="tour-metas">
                 <div class="tour-meta-left">
@@ -83,18 +115,32 @@
                     </p>
                 </div>
                 <div class="tour-meta-right">
-                    <a class="btn btn-share" href="#">
-                        <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13 11.5332C12.012 11.5332 11.1413 12.0193 10.5944 12.7584L5.86633 10.3374C5.94483 10.0698 6 9.79249 6 9.49989C6 9.10302 5.91863 8.72572 5.77807 8.37869L10.7262 5.40109C11.2769 6.04735 12.0863 6.46655 13 6.46655C14.6543 6.46655 16 5.12085 16 3.46655C16 1.81225 14.6543 0.466553 13 0.466553C11.3457 0.466553 10 1.81225 10 3.46655C10 3.84779 10.0785 4.20942 10.2087 4.54515L5.24583 7.53149C4.69563 6.90442 3.8979 6.49989 3 6.49989C1.3457 6.49989 0 7.84559 0 9.49989C0 11.1542 1.3457 12.4999 3 12.4999C4.00433 12.4999 4.8897 11.9996 5.4345 11.2397L10.147 13.6529C10.0602 13.9331 10 14.2249 10 14.5332C10 16.1875 11.3457 17.5332 13 17.5332C14.6543 17.5332 16 16.1875 16 14.5332C16 12.8789 14.6543 11.5332 13 11.5332Z" fill=""></path>
-                        </svg>
-                        Share
-                    </a>
-                    <a class="btn btn-wishlish" href="#">
-                        <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M2.2222 2.3638C4.34203 0.243977 7.65342 0.0419426 10.0004 1.7577C12.3473 0.0419426 15.6587 0.243977 17.7786 2.3638C20.1217 4.70695 20.1217 8.50594 17.7786 10.8491L12.1217 16.5059C10.9501 17.6775 9.05063 17.6775 7.87906 16.5059L2.2222 10.8491C-0.120943 8.50594 -0.120943 4.70695 2.2222 2.3638Z" fill=""></path>
-                        </svg>
-                        Wishlish
-                    </a>
+                    <form asp-page-handler="WishListForm" method="post">
+
+                        <input type="hidden" asp-for="RentCar.CarId" value="@Model.CurrentCar.Id" />
+
+                        <a class="btn btn-share" href="https://www.facebook.com/sharer/sharer.php?u=@pageUrl">
+                            <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13 11.5332C12.012 11.5332 11.1413 12.0193 10.5944 12.7584L5.86633 10.3374C5.94483 10.0698 6 9.79249 6 9.49989C6 9.10302 5.91863 8.72572 5.77807 8.37869L10.7262 5.40109C11.2769 6.04735 12.0863 6.46655 13 6.46655C14.6543 6.46655 16 5.12085 16 3.46655C16 1.81225 14.6543 0.466553 13 0.466553C11.3457 0.466553 10 1.81225 10 3.46655C10 3.84779 10.0785 4.20942 10.2087 4.54515L5.24583 7.53149C4.69563 6.90442 3.8979 6.49989 3 6.49989C1.3457 6.49989 0 7.84559 0 9.49989C0 11.1542 1.3457 12.4999 3 12.4999C4.00433 12.4999 4.8897 11.9996 5.4345 11.2397L10.147 13.6529C10.0602 13.9331 10 14.2249 10 14.5332C10 16.1875 11.3457 17.5332 13 17.5332C14.6543 17.5332 16 16.1875 16 14.5332C16 12.8789 14.6543 11.5332 13 11.5332Z" fill=""></path>
+                            </svg>
+                            Share
+                        </a>
+                        <button type="submit" class="btn btn-wishlish">
+                            @if (Model.IsCarInWishList)
+                            {
+                                <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.2222 2.3638C4.34203 0.243977 7.65342 0.0419426 10.0004 1.7577C12.3473 0.0419426 15.6587 0.243977 17.7786 2.3638C20.1217 4.70695 20.1217 8.50594 17.7786 10.8491L12.1217 16.5059C10.9501 17.6775 9.05063 17.6775 7.87906 16.5059L2.2222 10.8491C-0.120943 8.50594 -0.120943 4.70695 2.2222 2.3638Z" fill="red"></path>
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.2222 2.3638C4.34203 0.243977 7.65342 0.0419426 10.0004 1.7577C12.3473 0.0419426 15.6587 0.243977 17.7786 2.3638C20.1217 4.70695 20.1217 8.50594 17.7786 10.8491L12.1217 16.5059C10.9501 17.6775 9.05063 17.6775 7.87906 16.5059L2.2222 10.8491C-0.120943 8.50594 -0.120943 4.70695 2.2222 2.3638Z" fill=""></path>
+                                </svg>
+                            }
+                            Wishlish
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -347,7 +393,7 @@
 
                                         <p class="page-info">Page @Model.Page of @Model.TotalPages</p>
                                     </form>
-                                   
+
                                 </div>
                             </div>
                         </div>

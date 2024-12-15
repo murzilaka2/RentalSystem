@@ -148,6 +148,20 @@ namespace RentalSystem.Data
                     );                                                
                     """;
                 await command.ExecuteNonQueryAsync();
+
+                //Создание таблицы для желаний пользователей
+                command.CommandText = """
+                    CREATE TABLE [WishesList] (
+                        [Id] INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+                        [CreatedAt] DATETIME NOT NULL DEFAULT(GETDATE()),
+                        [CarId] INT NOT NULL,
+                        [UserId] INT NOT NULL,
+                        CONSTRAINT [FK_WishList_Car] FOREIGN KEY ([CarId]) REFERENCES [Cars]([Id]),
+                        CONSTRAINT [FK_WishList_User] FOREIGN KEY ([UserId]) REFERENCES [Users]([Id]),
+                        CONSTRAINT [UQ_WishList_Car_User] UNIQUE ([CarId], [UserId])
+                    );                                                
+                    """;
+                await command.ExecuteNonQueryAsync();
             }
         }
         public static async Task InitializeAsync(IUser users, IRole roles, ICar cars, IDealer dealers)

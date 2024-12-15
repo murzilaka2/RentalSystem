@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - RentalSystem</title>
+    @await RenderSectionAsync("MetaTags", required: false)
     <link rel="icon" type="image/png" href="assetsClient/images/favicon.png" sizes="16x16">
     <link rel="shortcut icon" type="image/x-icon" href="assetsClient/imgs/template/favicon.svg" />
     @await Html.PartialAsync("LayoutParts/_Styles")

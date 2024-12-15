@@ -25,7 +25,6 @@
                 </a>
             </li>
         }
-
         @if (User.IsInRole("Admin"))
         {
             <li>
@@ -45,5 +44,12 @@
                 </a>
             </li>
         }
+
+        <li>
+            <a href="/wishList">
+                <iconify-icon icon="mage:heart" class="menu-icon"></iconify-icon>
+                <span>Wish list</span>
+            </a>
+        </li>
     </ul>
 </div>

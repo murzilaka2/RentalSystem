@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RentalSystem.Interfaces;
 using RentalSystem.Models;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
 
 namespace RentalSystem.Pages.Home
@@ -15,6 +17,7 @@ namespace RentalSystem.Pages.Home
     {
         private readonly ICar _cars;
         private readonly IReview _review;
+        private readonly IWishList _wishList;
         public Car CurrentCar { get; set; }
         public IEnumerable<Review> Reviews { get; set; }
         public int TotalReviews { get; set; }
@@ -22,6 +25,7 @@ namespace RentalSystem.Pages.Home
         public int PageSize { get; set; } = 2;
         public int TotalPages { get; set; }
         public double AverageRating { get; set; }
+        public bool IsCarInWishList { get; set; }
 
         [BindProperty]
         public RentCarViewModel RentCar { get; set; }
@@ -31,16 +35,29 @@ namespace RentalSystem.Pages.Home
 
         [BindProperty]
         public string? ReturnUrl { get; set; }
-        public GetCarModel(ICar cars, IReview review)
+        public GetCarModel(ICar cars, IReview review, IWishList wishList)
         {
             _cars = cars;
             _review = review;
+            _wishList = wishList;
         }
 
-        public async Task OnGetAsync(int id, string returnUrl, [FromQuery] int page = 1)
+        public async Task<IActionResult> OnGetAsync(int id, string returnUrl, [FromQuery] int page = 1)
         {
             ReturnUrl = returnUrl;
             CurrentCar = await _cars.GetCarAsync(id);
+            string? userStringId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int userId = 0;
+            if (userStringId == null || !int.TryParse(userStringId, out userId))
+            {
+                Error();
+                return Redirect("/getCar?id=" + RentCar.CarId);
+            }
+            IsCarInWishList = await _wishList.IsCarInWishListAsync(new WishList
+            {
+                CarId = id,
+                UserId = userId
+            });
             Page = page;
 
             (Reviews, TotalReviews, AverageRating) = await _review.GetCarReviewsAsync(id, page, PageSize);
@@ -48,6 +65,7 @@ namespace RentalSystem.Pages.Home
 
             //You can add tracking of online users.
             TempData["Info"] = $"Right now there are {id} people watching this car.";
+            return Page();
         }
 
         public async Task<IActionResult> OnPostRentFormAsync([FromServices] IRental rentalService)
@@ -123,17 +141,81 @@ namespace RentalSystem.Pages.Home
 
             return Redirect("/getCar?id=" + CurrentCar.Id + "#reviewArea");
         }
-        private void Error(string? message = null)
+
+        public async Task<IActionResult> OnPostWishListFormAsync()
+        {
+           
+            string userStringId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value ?? null;
+            int userId = 0;
+            if (userStringId == null || !int.TryParse(userStringId, out userId))
+            {
+                Error();
+                return Redirect("/getCar?id=" + RentCar.CarId);
+            }
+
+            IsCarInWishList = await _wishList.IsCarInWishListAsync(new WishList
+            {
+                CarId = RentCar.CarId,
+                UserId = userId
+            });
+            if (IsCarInWishList)
+            {
+                try
+                {
+                    if (await _wishList.RemoveWishListAsync(new WishList
+                    {
+                        CarId = RentCar.CarId,
+                        UserId = userId
+                    }))
+                    {
+                        Success("Auto has been successfully removed from your wish list.", "WishSuccess");
+                    }
+                    else
+                    {
+                        Error(name: "WishError");
+                    }
+                }
+                catch (Exception)
+                {
+                    Error(name: "WishError");
+                }
+            }
+            else
+            {
+                try
+                {
+                    if (await _wishList.AddWishListAsync(new WishList
+                    {
+                        CarId = RentCar.CarId,
+                        UserId = userId
+                    }))
+                    {
+                        Success("Auto has been successfully added to your wish list.", "WishSuccess");
+                    }
+                    else
+                    {
+                        Error(name: "WishError");
+                    }
+                }
+                catch (Exception)
+                {
+                    Error(name: "WishError");
+                }
+            }          
+            return Redirect("/getCar?id=" + RentCar.CarId);
+        }
+
+        private void Error(string? message = null, string name = "Error")
         {
             if (message == null)
             {
                 message = "While executing the query, an exception occurred. Please reload the page.";
             }
-            TempData["Error"] = message;
+            TempData[name] = message;
         }
-        private void Success(string message)
+        private void Success(string message, string name = "Success")
         {
-            TempData["Success"] = message;
+            TempData[name] = message;
         }
 
         public class RentCarViewModel
