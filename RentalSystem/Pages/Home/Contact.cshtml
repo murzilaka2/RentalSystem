@@ -1,0 +1,89 @@
+﻿@page "/contact"
+@model ContactModel
+@{
+    Layout = "_HomeLayout";
+    ViewData["Title"] = "Contact";
+}
+
+<div class="page-header pt-100 background-body">
+    <div class="custom-container position-relative mx-auto">
+        <div class="bg-overlay rounded-12 overflow-hidden">
+            <img class="w-100 h-100 rounded-12 img-banner" src="/assetsClient/imgs/banner.png" alt="Carento">
+        </div>
+        <div class="container position-absolute z-1 top-50 start-50 translate-middle">
+            <h2 class="text-white">Get in touch</h2>
+        </div>
+    </div>
+</div>
+
+<div class="container pt-50">
+    <div class="row">
+        <div class="col-lg-6 mb-30">
+            <h2 class="neutral-1000 mb-25">Get in Touch</h2>
+            <div class="form-contact">
+                <form method="post">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="text-sm-medium neutral-1000">First Name</label>
+                                <input asp-for="ContactForm.FirstName" class="form-control username" type="text" placeholder="First Name" />
+                                <span asp-validation-for="ContactForm.FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="text-sm-medium neutral-1000">Phone Number</label>
+                                <input asp-for="ContactForm.PhoneNumber" class="form-control phone" type="text" placeholder="Phone number" />
+                                <span asp-validation-for="ContactForm.PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="text-sm-medium neutral-1000">Email Address</label>
+                                <input asp-for="ContactForm.Email" class="form-control email" type="email" placeholder="email@domain.com" />
+                                <span asp-validation-for="ContactForm.Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="text-sm-medium neutral-1000">Your Message</label>
+                                <textarea asp-for="ContactForm.Message" class="form-control" rows="6" placeholder="Leave us a message..."></textarea>
+                                <span asp-validation-for="ContactForm.Message" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="box-remember-forgot">
+                            <div class="form-group">
+                                <div class="remeber-me">
+                                    <label class="text-sm-medium neutral-500">
+                                        <input asp-for="ContactForm.AgreeToTerms" class="cb-remember" type="checkbox" /> Agree to our
+                                        <a class="text-sm-medium neutral-1000" href="term.html">Terms of service</a> and
+                                        <a class="text-sm-medium neutral-1000" href="https://carento-demo.vercel.app/privacy.html">Privacy Policy</a>
+                                    </label>
+                                    <span asp-validation-for="ContactForm.AgreeToTerms" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-book">Send message</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-30">
+            <div class="ps-lg-5">
+                <h4 class="neutral-1000">Our location</h4>
+                <p class="neutral-500 mb-30">2356 Oakwood Drive, Suite 18, Warszawa</p>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d16443.640075558254!2d21.026193743451906!3d52.218645721873266!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecd8244fdcebd%3A0xb85154ecc5453e10!2sHala%20Koszyki!5e0!3m2!1suk!2sua!4v1730366439015!5m2!1suk!2sua"
+                        width="100%" height="510" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

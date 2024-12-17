@@ -1,4 +1,80 @@
 ﻿@page "/testDrives"
-@model RentalSystem.Pages.Shared.Pages.TestDrivesModel
+@using DomainLayer.Models
+@model TestDrivesModel
 @{
+    ViewData["Title"] = "Test Drives";
 }
+
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+
+        <!-- Фильтрация -->
+        @await Html.PartialAsync("Utils/_Filter", Model.Pagination)
+
+    </div>
+    <div class="card-body p-24">
+        <div class="table-responsive scroll-sm">
+
+            @if (TempData["SuccessfullyDeleted"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", TempData["SuccessfullyDeleted"])
+            }
+            @if (TempData["Error"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", $"Error. {TempData["Error"]}")
+            }
+
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Date and Time</th>
+                        <th scope="col">Car Model</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Url</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (TestDrive testDrive in Model.TestDrives)
+                    {
+                        <tr>
+                            <td style="@(testDrive.TestDriveStatus == TestDriveStatus.New ? "background-color:#45b369;color:white":"")">@testDrive.Name</td>
+                            <td>@testDrive.Phone</td>
+                            <td>@testDrive.Date</td>
+                            <td>@testDrive.Car.Model</td>
+                            <td>
+                                <form method="post"
+                                          asp-page-handler="ChangeStatus"
+                                          asp-route-id="@testDrive.Id" asp-route-testDriveStatus="@testDrive.TestDriveStatus" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
+                                    <button class="btn btn-@(testDrive.TestDriveStatus == TestDriveStatus.New ? "success":"warning")">@testDrive.TestDriveStatus</button>
+                                      </form>
+                                </td>
+                            <td><a class="btn btn-primary" href="/getCar?id=@testDrive.CarId" target="_blank">Visit car</a></td>
+
+                            <td class="text-center">
+                                <div class="d-flex align-items-center gap-10 justify-content-center">                                  
+                                    <form method="post"
+                                          asp-page-handler="Delete"
+                                          asp-route-id="@testDrive.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()"
+                                          onsubmit="return confirm('Are you sure you want to remove this vehicle?');">
+                                        <button type="submit"
+                                                class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium
+                                       w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
+                                            <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Пагинация -->
+        @await Html.PartialAsync("Utils/_Pagination", Model.Pagination)
+
+    </div>
+</div>

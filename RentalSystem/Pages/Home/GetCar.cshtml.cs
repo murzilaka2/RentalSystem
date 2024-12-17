@@ -115,6 +115,8 @@ namespace RentalSystem.Pages.Home
         }
         public async Task<IActionResult> OnPostReviewFormAsync()
         {
+            ModelState.Remove("Name");
+            ModelState.Remove("Phone");
             CurrentCar = await _cars.GetCarAsync(Review.CarId);
             if (!ModelState.IsValid)
             {

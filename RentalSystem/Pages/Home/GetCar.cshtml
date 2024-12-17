@@ -485,12 +485,12 @@
                                 </svg>
                             </button>
 
-                            <a href="cars-details-2.html#" class="btn btn-book bg-2">
+                            <button data-bs-toggle="modal" data-bs-target="#myModalOffer" class="btn btn-book bg-2">
                                 Make An Offer Price
                                 <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M8.5 15L15.5 8L8.5 1M15.5 8L1.5 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
-                            </a>
+                            </button>
                         </div>
                     </div>
 
@@ -712,6 +712,28 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Offer Price Modal -->
+<div class="modal fade" id="myModalOffer" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Offer your Price</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-page-handler="TestDriveForm" method="post">
+                <div class="modal-body">
+                    <p class="mb-2">
+                        For this car, this feature is disabled.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>

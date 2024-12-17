@@ -13,6 +13,7 @@ namespace DomainLayer.Models
         public string Name { get; set; }
         public string Phone { get; set; }
         public DateTime Date { get; set; }
+        public TestDriveStatus TestDriveStatus { get; set; }
 
         public int CarId { get; set; }
         public Car Car { get; set; }

@@ -171,6 +171,7 @@ namespace RentalSystem.Data
                         [Phone] NVARCHAR(MAX) NOT NULL,
                         [Date] DATETIME NOT NULL,
                         [CarId] INT NOT NULL,
+                        [TestDriveStatus] INT NOT NULL DEFAULT 0,
                         CONSTRAINT [FK_TestDrives_Car] FOREIGN KEY ([CarId]) REFERENCES [Cars]([Id]),
                     );                                                                    
                     """;
