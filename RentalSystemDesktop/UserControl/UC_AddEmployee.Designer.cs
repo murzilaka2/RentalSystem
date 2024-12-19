@@ -119,7 +119,7 @@ namespace RentalSystemDesktop.UserControls
             btnSave.TabIndex = 9;
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = false;
-            btnSave.Click += this.btnSave_Click;
+            btnSave.Click += btnSave_Click;
             // 
             // btnBack
             // 
@@ -138,6 +138,7 @@ namespace RentalSystemDesktop.UserControls
             cbRoles.Name = "cbRoles";
             cbRoles.Size = new Size(262, 23);
             cbRoles.TabIndex = 0;
+            cbRoles.SelectedIndexChanged += cbRoles_SelectedIndexChanged;
             // 
             // label4
             // 
@@ -207,7 +208,7 @@ namespace RentalSystemDesktop.UserControls
             btnUploadImage.IconColor = Color.Black;
             btnUploadImage.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnUploadImage.IconSize = 30;
-            btnUploadImage.Location = new Point(822, 222);
+            btnUploadImage.Location = new Point(822, 225);
             btnUploadImage.Name = "btnUploadImage";
             btnUploadImage.Size = new Size(157, 35);
             btnUploadImage.TabIndex = 19;
