@@ -1,0 +1,11 @@
+{
+  "Address": "2356 Oakwood Drive, Suite 18, Warszawa",
+  "WorkHours": "Hours: 8:00 - 17:00, Mon - Sat",
+  "Emails": [
+    "rentcar@carento.com\r",
+    "support@carento.com"
+  ],
+  "EmailsForTextArea": "rentcar@carento.com\r\nsupport@carento.com",
+  "HelpText": "Need help? Call us",
+  "Phone": "+1 222-555-33-99"
+}

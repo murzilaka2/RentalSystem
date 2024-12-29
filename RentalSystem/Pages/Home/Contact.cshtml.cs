@@ -1,3 +1,4 @@
+using EmailService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -13,15 +14,29 @@ namespace RentalSystem.Pages.Home
         {
         }
 
-        public IActionResult OnPostAsync()
+        public IActionResult OnPostAsync([FromServices] IEmailSender emailSender)
         {
-            //Дописать получение формы, вывод сообщения об отправке или ошибке.
-            //Добавить конфигурационный файл и считывать почту на которуб отправляем от туда
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
+            //Сделать загрузку получателей:
+
+            var message = new Message(new string[] { "enykoruna1@gmail.com" }, "Rental System - Contact Form", $"""
+                Letter from: {ContactForm.Email}
+                First Name: {ContactForm.FirstName}
+                Phone Number: {ContactForm.PhoneNumber}
+                Message: {ContactForm.Message}
+                """);
+            if (emailSender.SendEmail(message))
+            {
+                TempData["Info"] = "Your email has been successfully sent!";
+            }
+            else
+            {
+                TempData["Error"] = "An error occurred while sending the email. Please try again later.";
+            }
             return Page();
         }
 

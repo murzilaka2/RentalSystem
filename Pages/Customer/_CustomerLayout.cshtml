@@ -1,0 +1,8 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@* Мастер страница для Клиента. Прописывем свои пункты меню и разделы. *@
+@RenderBody()
+
+@await RenderSectionAsync("Scripts", required: false)

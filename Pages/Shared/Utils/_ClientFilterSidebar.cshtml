@@ -1,0 +1,99 @@
+﻿@using RentalSystem.Models
+@model PaginationModel
+
+
+<div class="block-filter border-1 mb-3">
+    <a href="/" class="btn btn-primary px-3 py-2 w-100">
+        Clear
+    </a>
+</div>
+
+@*Search*@
+<div class="block-filter border-1 mb-3">
+
+    @if (Model.Filter != null)
+    {
+        <p>Search term: <b>@Model.Filter</b></p>
+        <hr />
+    }
+    <input type="text" form="clientForm" class="bg-base h-40-px" name="filter" value="@Model.Filter" placeholder="Search"
+           onkeypress="if(event.key === 'Enter'){ this.form.submit(); return false; }">
+</div>
+
+@*Filter range*@
+<div class="sidebar-left border-1 background-body">
+    <div class="box-filters-sidebar">
+        <div class="block-filter border-1">
+            <h6 class="text-lg-bold item-collapse neutral-1000">Filter Price</h6>
+            <div class="scrollFilter">
+                <label class="slider-label" for="rangeSlider">
+                    Value: <span id="sliderValue">@Model.PriceRange</span>
+                </label>
+                <input type="range" name="PriceRange" form="clientForm" value="@Model.PriceRange" class="form-control-range"
+                       id="rangeSlider" min="0" max="1000" oninput="updateValue(this.value)">
+            </div>
+            <div class="d-flex justify-content-between pt-20 border-top">
+                <a href="/" class="d-flex align-items-center">
+                    <div class="background-100 icon-shape p-1 rounded-1 me-2">
+                        <svg class="" xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 9 9" fill="none">
+                            <line x1="1.20074" y1="1.5141" x2="7.59837" y2="7.91174" stroke="black" stroke-width="0.904762"></line>
+                            <line x1="1.01337" y1="7.91156" x2="7.411" y2="1.51393" stroke="black" stroke-width="0.904762"></line>
+                        </svg>
+                    </div>
+                    <span class="text-sm-medium neutral-1000">Clear</span>
+                </a>
+                <button type="submit" form="clientForm" class="btn btn-primary px-3 py-2">
+                    Apply
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Car type filter*@
+<div class="sidebar-left border-1 background-body">
+    <div class="box-filters-sidebar">
+        <div class="block-filter border-1">
+            <h6 class="text-lg-bold item-collapse neutral-1000">Car type</h6>
+            <div class="box-collapse scrollFilter">
+                <ul class="list-filter-checkbox">
+                    @foreach (var carType in Enum.GetValues(typeof(CarType)))
+                    {
+                        <li>
+                            <label class="cb-container">
+                                <input type="checkbox" form="clientForm" name="CarTypes" value="@carType"
+                                @(Model.CarTypesInt != null && Model.CarTypesInt.Contains((int)carType) ? "checked" : "")>
+                                <span class="text-sm-medium">@carType</span><span class="checkmark"></span>
+                            </label>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <button type="submit" form="clientForm" class="btn btn-primary mt-2">Apply Filters</button>
+        </div>
+    </div>
+</div>
+
+@*Car brand filter*@
+<div class="sidebar-left border-1 background-body">
+    <div class="box-filters-sidebar">
+        <div class="block-filter border-1">
+            <h6 class="text-lg-bold item-collapse neutral-1000">Car Brand</h6>
+            <div class="box-collapse scrollFilter">
+                <ul class="list-filter-checkbox">
+                    @foreach (string brand in Model.SelectOptions)
+                    {
+                        <li>
+                            <label class="cb-container">
+                                <input type="checkbox" form="clientForm" name="CarBrands" value="@brand"
+                                @(Model.CarBrands != null && Model.CarBrands.Contains(brand) ? "checked" : "")>
+                                <span class="text-sm-medium">@brand</span><span class="checkmark"></span>
+                            </label>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <button type="submit" form="clientForm" class="btn btn-primary mt-2">Apply Filters</button>
+        </div>
+    </div>
+</div>

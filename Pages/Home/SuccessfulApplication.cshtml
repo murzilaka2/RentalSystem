@@ -1,0 +1,67 @@
+﻿@page "/successfulApplication"
+@model RentalSystem.Pages.Home.SuccessfulApplicationModel
+@{
+    Layout = "_HomeLayout";
+    ViewData["Title"] = "Successful Application";
+}
+
+<section class="section-1 py-96 background-body">
+    <div class="container">
+        <div class="row pb-50">
+            <div class="col-lg-4">
+                <h3 class="neutral-1000">
+                    Thank you for <br>
+                    <span class="text-primary">car rental</span>
+                    request!
+                </h3>
+                <a class="btn btn-primary mt-2" href="/">
+                    Home Page
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 15L15 8L8 1M15 8L1 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+            </div>
+            <div class="col-lg-7 offset-lg-1">
+                <p class="text-lg-medium neutral-500">We appreciate your trust in us and are committed to providing you with the best experience possible. At VROOMIE, we take pride in offering the following benefits to enhance your rental experience:</p>
+                <ul class="text-lg-medium neutral-400 mt-2">
+                    <li>Wide Selection of Vehicles</li>
+                    <li>Affordable Prices:</li>
+                    <li>Easy Booking Process</li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="box-image rounded-12 position-relative overflow-hidden">
+                    <img class="rounded-12" src="assetsClient/imgs/section/img-1.png" alt="Carento">
+                    <div class="box-tag bg-white p-3 d-flex position-absolute bottom-0 end-0 rounded-12 m-3">
+                        <span class="text-dark fs-72 me-3">86</span>
+                        <h6>
+                            Industry <br>
+                            Experts
+                        </h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="box-image rounded-12 position-relative overflow-hidden">
+                    <img class="rounded-12" src="assetsClient/imgs/section/img-2.png" alt="Carento">
+                </div>
+            </div>
+            <div class="col-lg-4 col-12">
+                <div class="d-flex flex-column gap-4 align-self-stretch h-100">
+                    <div class="box-tag background-brand-2 p-5 d-flex rounded-12">
+                        <span class="text-dark fs-96 me-3">25</span>
+                        <h4>
+                            Years in <br>
+                            Business
+                        </h4>
+                    </div>
+                    <img class="rounded-12" src="assetsClient/imgs/section/img-3.png" alt="Carento">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

@@ -1,0 +1,25 @@
+﻿@using RentalSystem.ViewModels
+@model ToastViewModel
+
+<div class="position-fixed bottom-0 start-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">@Model.Header</strong>
+            <small class="text-muted">Just now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body @(Model.Header.Equals("Error") ? "text-danger":"")">
+            @Model.Body
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const toastElement = document.getElementById('liveToast');
+        const toast = new bootstrap.Toast(toastElement, {
+            delay: 5000 
+        });
+        toast.show();
+    });
+</script>

@@ -1,0 +1,285 @@
+﻿@page "/adminDashboard/updateRental"
+@using RentalSystem.Models
+@model RentalSystem.Pages.Admin.RentalCars.UpdateRentalModel
+@{
+    ViewData["Title"] = "Update Car";
+    ViewData["CurrentPage"] = "<a href='/adminDashboard'>Admin Dashboard</a> / <a href='/adminDashboard/rentalCar'>Rental Cars</a> / Update Car";
+    bool IsClosed = Model.CurrentRental.Status != DomainLayer.Models.RentalHistoryStatus.Active;
+}
+
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+
+            <div class="d-flex flex-wrap align-items-center gap-3 mb-3 my-hr">
+                <a href="@(Model.ReturnUrl ?? "/adminDashboard/rentalCar")"
+                   class="badge text-sm fw-semibold text-primary-600 bg-primary-100 px-20 py-9 radius-4 text-white d-inline-flex align-items-center gap-2">
+                    <iconify-icon icon="mage:arrow-left" class="text-xl"></iconify-icon>
+                    Back
+                </a>
+            </div>
+
+            @if (TempData["SuccessfullyChanged"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", "Rental has been successfully updated.")
+            }
+
+            <div class="card mb-3" style="background-color: #f5f6fa">
+                <div class="row g-0">
+
+                    <div class="col-md-4">
+                        <img src="@Model.CurrentRental.Car.Image" class="img-fluid rounded-start" alt="@Model.CurrentRental.Car.Brand @Model.CurrentRental.Car.Model">
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">@Model.CurrentRental.Car.Brand @Model.CurrentRental.Car.Model</h5>
+                            <div class="card-text">
+                                <ul>
+                                    <li>
+                                        <hr />
+                                        <strong>Rental Status:</strong>
+                                        @if (Model.CurrentRental.Status == DomainLayer.Models.RentalHistoryStatus.Active)
+                                        {
+                                            <span class="badge bg-success">@Model.CurrentRental.Status </span>
+                                        }
+                                        else if (Model.CurrentRental.Status == DomainLayer.Models.RentalHistoryStatus.Completed)
+                                        {
+                                            <span class="badge bg-warning">@Model.CurrentRental.Status </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">@Model.CurrentRental.Status </span>
+                                        }
+                                    </li>
+                                    <li>
+                                        <hr />
+                                        <strong>Car Status:</strong>
+                                        <span class="badge bg-success">@Model.CurrentRental.Car.RentalStatus </span>
+                                    </li>
+
+                                    <li>
+                                        <hr />
+                                        <strong>Car Type:</strong>
+                                        <span class="text-primary">@Model.CurrentRental.Car.CarType</span>
+                                    </li>
+
+                                    <li>
+                                        <hr />
+                                        <strong> Year:</strong>
+                                        <span class="text-primary">@Model.CurrentRental.Car.Year</span>
+                                    </li>
+
+                                    <li>
+                                        <hr />
+                                        <strong>Transmission:</strong>
+                                        <span class="text-primary">@Model.CurrentRental.Car.Transmission</span>
+                                    </li>
+                                    <li>
+                                        <hr />
+                                        <strong>Price:</strong>
+                                        <span class="text-primary">$@Model.CurrentRental.Car.Price</span>
+                                    </li>
+
+                                    <li>
+                                        <hr />
+                                        <strong>Color:</strong>
+                                        <span class="text-primary">@Model.CurrentRental.Car.Color</span>
+                                    </li>
+                                    </ul>
+                                <h6 class="mb-3 mt-2 text-center">Payment information</h6>
+                                    <ul>
+                                    <li>
+                                        <hr />
+                                        <strong>Total days:</strong>
+                                        <span class="text-primary">@Model.RentalModel.CalculateTotalDays()</span>
+                                    </li>
+                                    <li>
+                                        <hr />
+                                        <strong>Total payable:</strong>
+                                        <span class="text-primary">@(Model.RentalModel.CalculateTotalDays() * Model.CurrentRental.Car.Price)$</span>
+                                    </li>
+                                    <li>
+                                        <hr />
+                                        <strong>Payment status:</strong>
+                                        @if (Model.RentalModel.PaymentStatus == DomainLayer.Models.PaymentStatus.Paid)
+                                        {
+                                            <span class="badge bg-success">@Model.RentalModel.PaymentStatus</span>
+                                        }
+                                        else if (Model.RentalModel.PaymentStatus == DomainLayer.Models.PaymentStatus.Pending)
+                                        {
+                                            <span class="badge bg-warning">@Model.RentalModel.PaymentStatus</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">@Model.RentalModel.PaymentStatus</span>
+                                        }
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <form asp-page-handler="UpdateRental" method="post">
+
+                <input asp-for="RentalModel.Id" type="hidden" />
+                <input asp-for="ReturnUrl" type="hidden" />
+                <input asp-for="RentalModel.UserId" type="hidden" />
+
+                @*Добавить кнопки для завершения или продления аренды авто*@
+
+                <div class="row mb-3">
+                    <div class="col-sm-6">
+                        <ul class="list-group radius-8">
+                            <li class="list-group-item border text-secondary-light p-16 bg-base border-bottom-0">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-flex"><iconify-icon icon="solar:gps-bold" class="text-xl"></iconify-icon></span>
+                                    <label class="form-check-label" for="IsGPSNavigationSystem">
+                                        GPS Navigation System
+                                    </label>
+                                    <input asp-for="RentalModel.IsGPSNavigationSystem" id="IsGPSNavigationSystem" class="form-check-input" type="checkbox" disabled="@IsClosed">
+                                </div>
+                            </li>
+                            <li class="list-group-item border text-secondary-light p-16 bg-base border-bottom-0">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-flex"><iconify-icon icon="solar:armchair-2-bold" class="text-xl"></iconify-icon></span>
+                                    <label class="form-check-label" for="ChildSeat">
+                                        Child Seat
+                                    </label>
+                                    <input asp-for="RentalModel.ChildSeat" id="ChildSeat" class="form-check-input" type="checkbox" disabled="@IsClosed">
+
+                                </div>
+                            </li>
+                            <li class="list-group-item border text-secondary-light p-16 bg-base border-bottom-0">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-flex"><iconify-icon icon="solar:user-hand-up-bold" class="text-xl"></iconify-icon></span>
+                                    <label class="form-check-label" for="AdditionalDriver">
+                                        Additional Driver
+                                    </label>
+                                    <input asp-for="RentalModel.AdditionalDriver" id="AdditionalDriver" class="form-check-input" type="checkbox" disabled="@IsClosed">
+
+                                </div>
+                            </li>
+                            <li class="list-group-item border text-secondary-light p-16 bg-base">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-flex"><iconify-icon icon="solar:eye-scan-bold" class="text-xl"></iconify-icon></span>
+                                    <label class="form-check-label" for="InsuranceCoverage">
+                                        Insurance Coverage
+                                    </label>
+                                    <input asp-for="RentalModel.InsuranceCoverage" id="InsuranceCoverage" class="form-check-input" type="checkbox" disabled="@IsClosed">
+
+                                </div>
+                            </li>
+                        </ul>
+
+                        <h6 class="mb-3 mt-16 text-center">Extra Options</h6>
+
+                        <label asp-for="RentalModel.StartDate" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                            Start rent date <span class="text-danger-600">*</span>
+                        </label>
+                        <input asp-for="RentalModel.StartDate" class="form-control radius-8" placeholder="Enter start date" disabled="@IsClosed" />
+                        <span asp-validation-for="RentalModel.StartDate" class="text-danger"></span>
+
+                        <label asp-for="RentalModel.EndDate" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                            End rent date <span class="text-danger-600">*</span>
+                        </label>
+                        <input asp-for="RentalModel.EndDate" class="form-control radius-8" placeholder="Enter end date" disabled="@IsClosed" />
+                        <span asp-validation-for="RentalModel.EndDate" class="text-danger"></span>
+
+                        <label asp-for="RentalModel.StartMileage" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                            Start mileage <span class="text-danger-600">*</span>
+                        </label>
+                        <input asp-for="RentalModel.StartMileage" class="form-control radius-8" placeholder="Enter start mileage" disabled="@IsClosed" />
+                        <span asp-validation-for="RentalModel.StartMileage" class="text-danger"></span>
+
+                        <label asp-for="RentalModel.EndMileage" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                            End mileage <span class="text-danger-600">*</span>
+                        </label>
+                        <input asp-for="RentalModel.EndMileage" class="form-control radius-8" placeholder="Enter end mileage" disabled="@IsClosed" />
+                        <span asp-validation-for="RentalModel.EndMileage" class="text-danger"></span>
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mt-2 mb-3 text-center"></div>
+
+                        <div class="d-flex align-items-center justify-content-center gap-3">
+                            <button type="submit" name="action" value="Save" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8" disabled="@IsClosed">
+                                Save
+                            </button>
+
+                            <button type="submit" name="action" value="CloseLease" class="btn btn-success border border-success-600 text-md px-56 py-12 radius-8" disabled="@IsClosed">
+                                Close lease
+                            </button>
+
+                            <button type="submit" name="action" value="CancelLease" class="btn btn-danger border border-danger-600 text-md px-56 py-12 radius-8" disabled="@IsClosed">
+                                Cancel lease
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="user-grid-card position-relative border radius-16 overflow-hidden bg-base h-100">
+                            <img src="assets/images/user-grid/user-grid-bg1.png" alt="" class="w-100 object-fit-cover">
+                            <div class="pb-24 ms-16 mb-24 me-16  mt--100">
+                                <div class="text-center border border-top-0 border-start-0 border-end-0">
+                                    @if (Model.CurrentRental.User.Profile.ProfileImage is null)
+                                    {
+                                        <img src="assets/images/user-grid/user-grid-img13.png"
+                                             class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                                    }
+                                    else
+                                    {
+                                        <img src="@Model.CurrentRental.User.Profile.ProfileImage"
+                                             class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                                    }
+                                    <h6 class="mb-0 mt-16">@Model.CurrentRental.User.FullName</h6>
+                                    <span class="text-secondary-light mb-16">@Model.CurrentRental.User.Email</span>
+                                </div>
+                                <div class="mt-24">
+                                    <ul>
+                                        <li class="d-flex align-items-center gap-1 mb-12">
+                                            <span class="w-30 text-md fw-semibold text-primary-light"> Phone number</span>
+                                            <span class="w-70 text-secondary-light fw-medium"> @(Model.CurrentRental.User.Profile?.PhoneNumber ?? "*")</span>
+                                        </li>
+                                        <li class="d-flex align-items-center gap-1 mb-12">
+                                            <span class="w-30 text-md fw-semibold text-primary-light"> Passport</span>
+                                            <span class="w-70 text-secondary-light fw-medium"> @(Model.CurrentRental.User.Profile?.Passport ?? "*")</span>
+                                        </li>
+                                        <li class="d-flex align-items-center gap-1 mb-12">
+                                            <span class="w-30 text-md fw-semibold text-primary-light"> Driving experience</span>
+                                            <span class="w-70 text-secondary-light fw-medium"> @Model.CurrentRental.User.Profile?.DrivingExperience year(s)</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    @*Переопределение валидации на стороне клиента*@
+    <script>
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        }
+
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+        }
+    </script>
+}

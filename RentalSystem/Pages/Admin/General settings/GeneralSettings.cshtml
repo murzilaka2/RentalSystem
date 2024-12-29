@@ -1,0 +1,188 @@
+﻿@page "/adminDashboard/generalSettings"
+@model GeneralSettingsModel
+@{
+    ViewData["Title"] = "General Settings";
+    ViewData["CurrentPage"] = "<a href='/adminDashboard'>Admin Dashboard</a> / General Settings";
+
+    string activeTab = "ChangeEmails";
+    if (TempData["ActiveTab"] != null)
+    {
+        activeTab = TempData["ActiveTab"] as string;
+    }
+}
+
+<div class="col-xxl-12">
+    <div class="card p-0 overflow-hidden position-relative radius-12 h-100">
+        <div class="card-body p-24 pt-10">
+            <ul class="nav bordered-tab border border-top-0 border-start-0 border-end-0 d-inline-flex nav-pills mb-16" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link px-16 py-10 @(activeTab.Equals("ChangeEmails") ? "active":"")" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Change Emails</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link px-16 py-10 @(activeTab.Equals("HeaderContent") ? "active":"")" id="pills-header-tab" data-bs-toggle="pill" data-bs-target="#pills-header" type="button" role="tab" aria-controls="pills-header" aria-selected="false" tabindex="-1">Header Content</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link px-16 py-10 @(activeTab.Equals("FooterContent") ? "active":"")" id="pills-details-tab" data-bs-toggle="pill" data-bs-target="#pills-details" type="button" role="tab" aria-controls="pills-details" aria-selected="false" tabindex="-1">Footer Content</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                @if (TempData["Successfully"] != null)
+                {
+                    @await Html.PartialAsync("StatusMessage", "The changes have been successfully saved.")
+                }
+                @if (TempData["Error"] != null)
+                {
+                    @await Html.PartialAsync("StatusMessage", $"Error. {TempData["Error"]}")
+                }
+                <div class="tab-pane fade @(activeTab.Equals("ChangeEmails")?"show active":"")" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                    <div>
+                        @*Change Emails Tab*@ 
+                        <p>Edit recipient addresses for the contact form.</p>
+                        <form method="post" id="emailForm">
+                            <div id="recipientsContainer">
+                                @for (int i = 0; i < Model.Recipients.Count; i++)
+                                {
+                                    <div class="form-group" id="recipient-@i">
+                                        <label asp-for="Recipients[i]">Email @(i + 1):</label>
+                                        <input asp-for="Recipients[i]" class="form-control" />
+                                        @if (i > 0)
+                                        {
+                                            <button type="button" class="btn btn-danger btn-sm mt-2 remove-recipient" data-index="@i">Remove</button>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <button type="button" id="addEmailButton" class="btn btn-secondary mt-3">Add Email</button>
+                            <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane fade @(activeTab.Equals("HeaderContent")?"show active":"")" id="pills-header" role="tabpanel" aria-labelledby="pills-header-tab" tabindex="0">
+                    <div>
+                        @*Home Tab*@
+                        <form asp-page-handler="HeaderSettingsForm" method="post">
+                            <img src="@Model.HeaderData.Logo" style="max-width:200px;max-height:100px" />
+                            <div class="form-group">
+                                <label asp-for="HeaderData.Logo" class="form-label"></label>
+                                <input asp-for="HeaderData.Logo" class="form-control" />
+                                <span asp-validation-for="HeaderData.Logo" class="text-danger"></span>
+                            </div>
+
+                            <div id="menuItemsContainer">
+                                @for (int i = 0; i < Model.HeaderData.MenuItems.Count; i++)
+                                {
+                                    <div class="form-group menu-item-group" id="menuItem_@i">
+                                        <label for="@Model.HeaderData.MenuItems[i].Title" class="form-label">
+                                            Menu Item @i: @Model.HeaderData.MenuItems[i].Title
+                                        </label>
+
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1" style="height:45px">Title</span>
+                                            </div>
+                                            <input asp-for="HeaderData.MenuItems[i].Title" class="form-control" placeholder="Enter the menu title" />
+                                        </div>
+
+                                        <div class="input-group mt-2">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon2" style="height:45px">Link</span>
+                                            </div>
+                                            <input asp-for="HeaderData.MenuItems[i].Link" class="form-control" placeholder="Enter the URL" />
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger btn-sm mt-2 remove-recipient" onclick="removeMenuItem(@i)">Remove</button>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-secondary" onclick="addMenuItem()">Add Menu</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane fade @(activeTab.Equals("FooterContent")?"show active":"")" id="pills-details" role="tabpanel" aria-labelledby="pills-details-tab" tabindex="0">
+                    <div>
+                        @*Home Tab*@
+                        <form asp-page-handler="FooterSettingsForm" method="post">
+                            <div class="form-group">
+                                <label asp-for="FooterData.Address" class="form-label"></label>
+                                <input asp-for="FooterData.Address" class="form-control" />
+                                <span asp-validation-for="FooterData.Address" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="FooterData.WorkHours" class="form-label"></label>
+                                <input asp-for="FooterData.WorkHours" class="form-control" />
+                                <span asp-validation-for="FooterData.WorkHours" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="FooterData.EmailsForTextArea" class="form-label"></label>
+                                <textarea asp-for="FooterData.EmailsForTextArea" class="form-control"></textarea>
+                                <small class="form-text text-muted">Enter each new e-mail address on a new line.</small>
+                                <span asp-validation-for="FooterData.EmailsForTextArea" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="FooterData.HelpText" class="form-label"></label>
+                                <textarea asp-for="FooterData.HelpText" class="form-control"></textarea>
+                                <span asp-validation-for="FooterData.HelpText" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="FooterData.Phone" class="form-label"></label>
+                                <input asp-for="FooterData.Phone" class="form-control" />
+                                <span asp-validation-for="FooterData.Phone" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assets/js/inputHelper.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+
+    <script>
+        let menuItemCount = @Model.HeaderData.MenuItems.Count - 1;
+
+        function addMenuItem() {
+            menuItemCount++;
+            const container = document.getElementById('menuItemsContainer');
+            const newItem = document.createElement('div');
+            newItem.classList.add('form-group', 'menu-item-group');
+            newItem.id = `menuItem_${menuItemCount}`;
+
+            newItem.innerHTML = `
+                <label for="HeaderData.MenuItems[${menuItemCount}].Title" class="form-label">Menu Item ${menuItemCount}</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="height:45px">Title</span>
+                    </div>
+                    <input name="HeaderData.MenuItems[${menuItemCount}].Title" class="form-control" placeholder="Enter the menu title" />
+                </div>
+                <div class="input-group mt-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="height:45px">Link</span>
+                    </div>
+                    <input name="HeaderData.MenuItems[${menuItemCount}].Link" class="form-control" placeholder="Enter the URL" />
+                </div>
+                <button type="button" class="btn btn-danger mt-2" onclick="removeMenuItem(${menuItemCount})">Remove</button>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function removeMenuItem(index) {
+            const item = document.getElementById(`menuItem_${index}`);
+            item.remove();
+        }
+    </script>
+}

@@ -1,0 +1,129 @@
+﻿@page "/customerDashboard"
+@using DomainLayer.Models
+@model RentalSystem.Pages.Customer.CustomerDashboardModel
+
+<div class="card-body p-24">
+    <div class="row">
+
+        @*Rent cars*@
+
+        <div class="card h-100 p-0 radius-12 overflow-hidden">
+            <div class="card-body p-20">
+                <div class="row justify-content-left">
+
+                    <div class="row align-items-center advenca">
+                        <div class="col-xl-7">
+                            <h4 class="mb-20">Your Ride, Your Rules!</h4>
+                            <p class="mb-0 text-secondary-light max-w-634-px text-xl">
+                                Welcome to your car rental dashboard. Here, you can view and manage your rental information, including rental period, mileage, and additional services. Update your preferences, track your rental status, and stay informed about your current lease.
+                            </p>
+                        </div>
+                        <div class="col-xl-5 d-xl-block d-none">
+                            <img src="assetsClient/imgs/page/car/rentRule.webp" alt="">
+                        </div>
+                    </div>
+
+                    <h4 class="mb-20">Rental vehicles</h4>
+
+                    @if (Model.Rentals == null || Model.Rentals.Count < 1)
+                    {
+                        <div class="text-center">
+                            <p class="mb-0 text-lg text-secondary-light">You don't have a rental car. <a href="/">Do you want one?</a></p>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Фильтрация -->
+                        <div class="mb-3">
+                            @await Html.PartialAsync("Utils/_Filter", Model.Pagination)
+                        </div>
+
+                        @foreach (Rental rental in Model.Rentals)
+                        {
+                            <div class="col-xxl-6 col-md-6 user-grid-card mb-3">
+                                <div class="position-relative border radius-16 overflow-hidden">
+                                    <img src="@(rental.Car.Image ?? " assets/images/user-grid/default-car.jpg")" alt="" class="w-100 object-fit-cover" style="max-height:335px">
+                                    <div class="position-absolute top-0 end-25" style="width:200px;background:#e4f1ffd1;padding:7px;border-radius:20px">
+                                        <ul>
+                                            <li>Pick-Up: @rental.StartDate.ToString("dd/MM/yyyy")</li>
+                                            <li>Drop-Off: @rental.EndDate?.ToString("dd/MM/yyyy")</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="dropdown position-absolute top-0 end-0 me-16 mt-16">
+                                        <button type="button" data-bs-toggle="dropdown" aria-expanded="false" class="bg-white-gradient-light w-32-px h-32-px radius-8 border border-light-white d-flex justify-content-center align-items-center text-white">
+                                            <iconify-icon icon="entypo:dots-three-vertical" class="icon "></iconify-icon>
+                                        </button>
+                                        <ul class="dropdown-menu p-12 border bg-base shadow">
+                                            <li>
+                                                <a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" href="users-grid.html#">
+                                                    Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="delete-btn dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-danger-100 text-hover-danger-600 d-flex align-items-center gap-10">
+                                                    Cancel
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="ps-16 pb-16 pe-16 text-center mt--50">
+                                        
+                                        <div class="center-border position-relative bg-danger-gradient-light radius-8 p-12 d-flex align-items-center gap-4">
+                                            <div class="text-center w-50">
+                                                <h6 class="text-md mb-0">@rental.Car.Brand</h6>
+                                                <span class="text-secondary-light text-sm mb-0">@rental.Car.Model</span> / 
+                                                <span class="text-secondary-light text-sm mb-0">@rental.Car.CarType</span>
+                                            </div>
+                                            <div class="text-center w-50">
+
+                                                @if (rental.Status == DomainLayer.Models.RentalHistoryStatus.Active)
+                                                {
+                                                    <span class="badge bg-success">@rental.Status </span>
+                                                }
+                                                else if (rental.Status == DomainLayer.Models.RentalHistoryStatus.Completed)
+                                                {
+                                                    <span class="badge bg-warning">@rental.Status </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">@rental.Status </span>
+                                                }
+
+                                                <h6 class="text-md mb-0">@rental.Car.Year year</h6>
+                                                <span class="text-secondary-light text-sm mb-0">@rental.Car.CurrentMileage miles</span>
+                                            </div>
+                                        </div>
+                                        <a href="/customerDashboard/rentdetails?id=@rental.Id&returnUrl=@ViewContext.HttpContext.Request.PathAndQuery()" class="bg-primary-50 text-primary-600 bg-hover-primary-600 hover-text-white p-10 text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center justify-content-center mt-16 fw-medium gap-2 w-100">
+                                            Details
+                                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon text-xl line-height-1"></iconify-icon>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Пагинация -->
+                        @await Html.PartialAsync("Utils/_Pagination", Model.Pagination)
+
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<style>
+    .dashboard-main-body .p-24 {
+        padding-top: 0px !important;
+    }
+
+    .advenca {
+        border-bottom: 2px solid #487fff;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+</style>

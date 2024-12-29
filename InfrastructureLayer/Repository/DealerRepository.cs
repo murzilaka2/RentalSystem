@@ -124,6 +124,83 @@ namespace InfrastructureLayer.Repository
 
             return (dealers, totalCount);
         }
+        public async Task<(IEnumerable<Dealer> Dealers, int TotalCount)> GetAllDealersWithCarsCountAsync(FilterModel filterModel)
+        {
+            string orderByColumn = filterModel.Status switch
+            {
+                "First Name" => "FirstName",
+                "Last Name" => "LastName",
+                _ => "WorkExperience"
+            };
+
+            string query = $@"
+    WITH FilteredDealers AS (
+        SELECT 
+            d.[Id],
+            d.[FirstName],
+            d.[LastName],
+            d.[WorkExperience],
+            d.[Mobile],
+            d.[Email],
+            d.[WhatsApp],
+            d.[Fax]
+        FROM [Dealers] d
+        WHERE (@Filter IS NULL OR (d.FirstName LIKE '%' + @Filter + '%' OR d.LastName LIKE '%' + @Filter + '%'))
+    ),
+    DealerWithCarsCount AS (
+        SELECT 
+            d.Id,
+            COUNT(c.Id) AS CarsCount
+        FROM [Dealers] d
+        LEFT JOIN [Cars] c ON d.Id = c.DealerId
+        GROUP BY d.Id
+    )
+    SELECT 
+        d.*, 
+        COALESCE(c.CarsCount, 0) AS CarsCount,
+        COUNT(*) OVER() AS TotalCount
+    FROM FilteredDealers d
+    LEFT JOIN DealerWithCarsCount c ON d.Id = c.Id
+    ORDER BY {orderByColumn} DESC
+    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+
+            SqlParameter[] parameters = {
+        new SqlParameter("@Filter", SqlDbType.NVarChar) { Value = (object)filterModel.Filter ?? DBNull.Value },
+        new SqlParameter("@Offset", SqlDbType.Int) { Value = (filterModel.Page - 1) * filterModel.PageSize },
+        new SqlParameter("@PageSize", SqlDbType.Int) { Value = filterModel.PageSize }
+    };
+
+            List<Dealer> dealers = new List<Dealer>();
+            int totalCount = 0;
+
+            await _queryBuilder.ExecuteQueryAsync(query, reader =>
+            {
+                while (reader.Read())
+                {
+                    var dealer = new Dealer
+                    {
+                        Id = reader.GetInt32(0),
+                        FirstName = reader.GetString(1),
+                        LastName = reader.GetString(2),
+                        WorkExperience = reader.GetInt32(3),
+                        Mobile = reader.GetString(4),
+                        Email = reader.GetString(5),
+                        WhatsApp = reader.IsDBNull(6) ? null : reader.GetString(6),
+                        Fax = reader.IsDBNull(7) ? null : reader.GetString(7),
+                        CarsCount = reader.GetInt32(8) 
+                    };
+                    dealers.Add(dealer);
+
+                    if (totalCount == 0)
+                    {
+                        totalCount = reader.GetInt32(9);
+                    }
+                }
+            }, parameters);
+
+            return (dealers, totalCount);
+        }
+
         public async Task<Dealer?> GetDealerAsync(int id)
         {
             string query = @"

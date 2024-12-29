@@ -1,23 +1,31 @@
-﻿<footer class="footer">
+﻿@using RentalSystem.Services
+@inject FooterService FooterService
+@{
+    var footerData = FooterService.GetFooterData();
+}
+
+<footer class="footer">
     <div class="container">
 
         <div class="row">
             <div class="col-md-3 col-sm-12 footer-1">
                 <div class="box-info-contact mt-0">
-                    <p class="text-md neutral-400 icon-address">2356 Oakwood Drive, Suite 18, Warszawa</p>
-                    <p class="text-md neutral-400 icon-worktime">Hours: 8:00 - 17:00, Mon - Sat</p>
+                    <p class="text-md neutral-400 icon-address">@footerData.Address</p>
+                    <p class="text-md neutral-400 icon-worktime">@footerData.WorkHours</p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-12 footer-1">
                 <div class="box-info-contact mt-0">
-                    <p class="text-md neutral-400 icon-email">rentcar@carento.com</p>
-                    <p class="text-md neutral-400 icon-email">support@carento.com</p>
+                    @foreach (var email in footerData.Emails)
+                    {
+                        <p class="text-md neutral-400 icon-email">@email</p>
+                    }
                 </div>
             </div>
             <div class="col-md-3 col-sm-12 footer-1">
                 <div class="box-need-help">
-                    <p class="need-help text-md-medium mb-5">Need help? Call us</p>
-                    <br /><a class="heading-6 phone-support" href="tel:+1 222-555-33-99">+1 222-555-33-99</a>
+                    <p class="need-help text-md-medium mb-5">@footerData.HelpText</p>
+                    <br /><a class="heading-6 phone-support" href="tel:@footerData.Phone">@footerData.Phone</a>
                 </div>
             </div>
         </div>

@@ -1,0 +1,104 @@
+﻿@page "/wishList"
+@using DomainLayer.Models
+@model RentalSystem.Pages.Shared.Pages.WishListModel
+@{
+}
+
+<style>
+    .advenca {
+        border-bottom: 2px solid #487fff;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="card-body p-24">
+    <div class="row">
+        <div class="card h-100 p-0 radius-12 overflow-hidden">
+            <div class="card-body p-20">
+                <div class="row justify-content-left">
+
+                    <div class="row align-items-center advenca">
+                        <div class="col-xl-7">
+                            <h4 class="mb-20">Saving Your Perfect Ride!</h4>
+                            <p class="mb-0 text-secondary-light max-w-634-px text-xl">
+                                Creating a wish list helps you determine in advance what's important to you: the type of vehicle, its color, interior features, class, or even model.
+                            </p>
+                        </div>
+                        <div class="col-xl-5 d-xl-block d-none">
+                            <img src="assetsClient/imgs/page/car/rentRule.webp" alt="">
+                        </div>
+                    </div>
+                    <h4 class="mb-10">Saved vehicles</h4>
+                    @if (Model.Wishes != null && Model.Wishes.Count > 0)
+                    {
+                        @if (TempData["SuccessfullyDeleted"] != null)
+                        {
+                            @await Html.PartialAsync("StatusMessage", TempData["SuccessfullyDeleted"])
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            @await Html.PartialAsync("StatusMessage", $"Error. {TempData["Error"]}")
+                        }
+
+                        @foreach (WishList wish in Model.Wishes)
+                        {
+                            <div class="col-xxl-4 col-sm-6 mt-3">
+                                <div class="card h-100 radius-12">
+                                    <img src="@(wish.Car.Image ?? "assets/images/user-grid/car-default.jpg")" class="card-img-top" alt="@wish.Car.Model">
+                                    <div class="card-body p-16 text-center">
+                                        <h5 class="card-title text-lg text-primary-light
+                         mb-6">
+                                            @wish.Car.Brand @wish.Car.Model
+                                        </h5>
+                                        <div class="card-text text-secondary">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <span>Year:</span>
+                                                    <span class="fw-bold">@wish.Car.Year</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <span>Status:</span>
+                                                    <span class="badge bg-info text-dark">@wish.Car.RentalStatus</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <span>Added in list:</span>
+                                                    <span class="text-muted">@wish.CreatedAt.ToShortDateString()</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="d-flex flex-wrap align-items-center justify-content-center gap-3 mt-3">
+                                            <a href="/getCar?id=@wish.CarId" class="btn btn-primary-100 text-white text-primary-600 px-12 py-10 d-inline-flex align-items-center gap-2">
+                                                Book Now <iconify-icon icon="iconamoon:arrow-right-2" class="text-xl"></iconify-icon>
+                                            </a>
+
+                                            <form method="post"
+                                                  asp-page-handler="Remove"
+                                                  asp-route-id="@wish.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()"
+                                                  onsubmit="return confirm('Are you sure you want to remove the auto from your wish list?');">
+                                                <button type="submit" class="btn btn-danger-100 text-white text-warning-600 px-12 py-10 d-inline-flex align-items-center gap-2">
+                                                    Remove <iconify-icon icon="bx:bookmark-minus" class="text-xl"></iconify-icon>
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center">
+                            <p class="mb-0 text-lg text-secondary-light">Your wish list is empty. <a href="/">Do you want any?</a></p>
+                        </div>
+
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

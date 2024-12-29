@@ -1,0 +1,100 @@
+﻿@page "/adminDashboard/cars"
+@using RentalSystem.Models
+@model CarsModel
+@{
+    ViewData["Title"] = "Cars";
+    ViewData["CurrentPage"] = "<a href='/adminDashboard'>Admin Dashboard</a> / Cars";
+}
+
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+
+        <!-- Фильтрация -->
+        @await Html.PartialAsync("Utils/_Filter", Model.Pagination)
+
+        <a href="/adminDashboard/addCar" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
+            Add New Car
+        </a>
+    </div>
+    <div class="card-body p-24">
+        <div class="table-responsive scroll-sm">
+
+            @if (TempData["SuccessfullyDeleted"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", TempData["SuccessfullyDeleted"])
+            }
+            @if (TempData["SuccessfullyAdded"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", "Car has been successfully added.")
+            }
+            @if (TempData["Error"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", $"Error. {TempData["Error"]}")
+            }
+
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Brand</th>
+                        <th scope="col">Model</th>
+                        <th scope="col">Color</th>
+                        <th scope="col">Engine Displacement</th>
+                        <th scope="col">Current Mileage</th>
+                        <th scope="col">Mileage Limit</th>
+                        <th scope="col">Seats Count</th>
+                        <th scope="col">Price</th>
+                        <th scope="col" class="text-center">Car Type</th>
+                        <th scope="col" class="text-center">Transmission</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Car car in Model.Cars)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="@(car.Image ?? "assets/images/user-grid/car-default.jpg")" alt="@car.Model" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
+                                    <div class="flex-grow-1">
+                                        <span class="text-md mb-0 fw-normal text-secondary-light">@car.Brand</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="text-md mb-0 fw-normal text-secondary-light">@car.Model</span></td>
+                            <td>@(car.Color ?? "_")</td>
+                            <td>@car.EngineDisplacement</td>
+                            <td>@car.CurrentMileage</td>
+                            <td>@car.MileageLimit</td>
+                            <td>@car.SeatsCount</td>
+                            <td>@car.Price</td>
+                            <td>@car.CarType</td>
+                            <td>@car.Transmission</td>
+                            <td class="text-center">
+                                <div class="d-flex align-items-center gap-10 justify-content-center">
+                                    <a href="adminDashboard/updateCar?id=@car.Id&returnUrl=@ViewContext.HttpContext.Request.PathAndQuery()" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
+                                        <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
+                                    </a>
+                                    <form method="post"
+                                          asp-page-handler="Delete"
+                                          asp-route-id="@car.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()"
+                                          onsubmit="return confirm('Are you sure you want to remove this vehicle?');">
+                                        <button type="submit"
+                                                class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium
+                                       w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
+                                            <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Пагинация -->
+        @await Html.PartialAsync("Utils/_Pagination", Model.Pagination)
+
+    </div>
+</div>

@@ -1,8 +1,27 @@
 ﻿@page "/contact"
+@using RentalSystem.ViewModels
 @model ContactModel
 @{
     Layout = "_HomeLayout";
     ViewData["Title"] = "Contact";
+}
+
+@if (TempData["Error"] != null)
+{
+    @await Html.PartialAsync("Shared/Utils/_Toast", new ToastViewModel
+{
+    Header = "Error",
+    Body = TempData["Error"]!.ToString()!
+})
+}
+
+@if (TempData["Info"] != null)
+{
+    @await Html.PartialAsync("Shared/Utils/_Toast", new ToastViewModel
+{
+    Header = "Info",
+    Body = TempData["Info"]!.ToString()!
+})
 }
 
 <div class="page-header pt-100 background-body">

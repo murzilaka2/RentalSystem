@@ -21,5 +21,6 @@ namespace DomainLayer.Models
 
         [NotMapped]
         public string SelectName => $"{FirstName} {LastName}";
+        public int CarsCount { get; set; }
     }
 }

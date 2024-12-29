@@ -1,0 +1,17 @@
+{
+  "Logo": "assets/images/logo.png",
+  "MenuItems": [
+    {
+      "Title": "Home",
+      "Link": "/"
+    },
+    {
+      "Title": "Dealers",
+      "Link": "/dealers"
+    },
+    {
+      "Title": "Contact",
+      "Link": "/contact"
+    }
+  ]
+}

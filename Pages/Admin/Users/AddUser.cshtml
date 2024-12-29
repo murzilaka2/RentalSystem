@@ -1,0 +1,133 @@
+﻿@page "/adminDashboard/addUser"
+@model AddUserModel
+@{
+    ViewData["Title"] = "Add User";
+    ViewData["CurrentPage"] = "<a href='/adminDashboard'>Admin Dashboard</a> / <a href='/adminDashboard/users'>Users</a> / Add User";
+}
+
+<div class="card h-100 p-0 radius-12">
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+
+            @if (TempData["SuccessfullyChanged"] != null)
+            {
+                @await Html.PartialAsync("StatusMessage", "User has been successfully added.")
+            }
+
+            <form asp-page-handler="AddUser" method="post" enctype="multipart/form-data">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="UserProfileModel.FullName" class="form-label fw-semibold text-primary-light text-sm mb-8">Full Name <span class="text-danger-600">*</span></label>
+                            <input asp-for="UserProfileModel.FullName" class="form-control radius-8" placeholder="Enter full name" />
+                            <span asp-validation-for="UserProfileModel.FullName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="UserProfileModel.Email" class="form-label fw-semibold text-primary-light text-sm mb-8">Email <span class="text-danger-600">*</span></label>
+                            <input asp-for="UserProfileModel.Email" class="form-control radius-8" placeholder="Enter email address" />
+                            <span asp-validation-for="UserProfileModel.Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="UserProfileModel.PhoneNumber" class="form-label fw-semibold text-primary-light text-sm mb-8">Phone number</label>
+                            <input asp-for="UserProfileModel.PhoneNumber" class="form-control radius-8" placeholder="Enter phone number" />
+                            <span asp-validation-for="UserProfileModel.PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="UserProfileModel.Passport" class="form-label fw-semibold text-primary-light text-sm mb-8">Passport</label>
+                            <input asp-for="UserProfileModel.Passport" class="form-control radius-8" placeholder="Enter passport number" />
+                            <span asp-validation-for="UserProfileModel.Passport" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="UserProfileModel.DrivingExperience" class="form-label fw-semibold text-primary-light text-sm mb-8">Driving experience</label>
+                            <input asp-for="UserProfileModel.DrivingExperience" class="form-control radius-8" placeholder="Enter driving experience" />
+                            <span asp-validation-for="UserProfileModel.DrivingExperience" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <!-- Upload Image Start -->
+                            <h6 class="text-md text-primary-light mb-16">Profile Image</h6>
+                            <div class="mb-24 mt-16">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
+                                        <input asp-for="UserProfileModel.ProfileImage" type="file" id="imageUpload" accept=".png, .jpg, .jpeg" hidden="">
+                                        <label for="imageUpload" class="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle">
+                                            <iconify-icon icon="solar:camera-outline" class="icon"></iconify-icon>
+                                        </label>
+                                    </div>
+                                    <div class="avatar-preview">
+                                        <div id="imagePreview" style="width: 150px; height: 150px; background-image: url('/assets/images/user-grid/user-grid-img13.png'); background-size: cover; background-position: center center;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Upload Image End -->
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="UserProfileModel.Description" class="form-label fw-semibold text-primary-light text-sm mb-8">Description</label>
+                            <textarea asp-for="UserProfileModel.Description" class="form-control radius-8" placeholder="Write description..."></textarea>
+                            <span asp-validation-for="UserProfileModel.Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="UserProfileModel.RoleId" class="form-label fw-semibold text-primary-light text-sm mb-8">Role</label>
+                            <select asp-for="UserProfileModel.RoleId" asp-items="@(new SelectList(Model.Roles, "Id", "Name"))" class="form-select"> </select>
+                            <span asp-validation-for="UserProfileModel.RoleId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="UserProfileModel.Password" class="form-label fw-semibold text-primary-light text-sm mb-8">Password</label>
+                            <input asp-for="UserProfileModel.Password" class="form-control radius-8" placeholder="Enter password" />
+                            <span asp-validation-for="UserProfileModel.Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-20">
+                            <label asp-for="UserProfileModel.ConfirmPassword" class="form-label fw-semibold text-primary-light text-sm mb-8">Confirm password</label>
+                            <input asp-for="UserProfileModel.ConfirmPassword" class="form-control radius-8" placeholder="Confirm password" />
+                            <span asp-validation-for="UserProfileModel.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-center gap-3">
+                    <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                        Save
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    @* Для загрузки изображения *@
+    <script>
+        document.getElementById("imageUpload").addEventListener("change", function () {
+            var input = this;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imagePreview').style.backgroundImage = 'url(' + e.target.result + ')';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+    </script>
+}

@@ -1,0 +1,748 @@
+﻿@page "/getCar"
+@using DomainLayer.Models
+@using RentalSystem.ViewModels
+@model RentalSystem.Pages.Home.GetCarModel
+@{
+    Layout = "_HomeLayout";
+    string title = $"{Model.CurrentCar.Brand} {Model.CurrentCar.Model}";
+    string description = "Looking for a reliable and affordable car rental? Look no further! Our car rental service offers a wide selection of vehicles to suit every need, whether you're planning a road trip, need a car for business, or just want to explore the city.";
+    ViewData["Title"] = title;
+    string pageUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}{Request.QueryString}";
+}
+
+@section MetaTags {
+    <meta name="robots" content="max-image-preview:large">
+    <meta property="og:locale" content="en_En">
+    <meta property="og:url" content="@pageUrl">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="@title">
+    <meta property="og:description" content="@description">
+    <meta property="og:image" content="@Url.Content(Model.CurrentCar.Image)">
+    <meta property="article:publisher" content="https://www.facebook.com/">
+    <meta property="article:published_time" content="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssK");">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@title" />
+    <meta name="twitter:description" content="@description" />
+    <meta name="twitter:image" content="@Url.Content(Model.CurrentCar.Image)" />
+}
+
+@if (TempData["Error"] != null)
+{
+    @await Html.PartialAsync("Shared/Utils/_Toast", new ToastViewModel
+{
+    Header = "Error",
+    Body = TempData["Error"]!.ToString()!
+})
+}
+
+@if (TempData["Info"] != null)
+{
+    @await Html.PartialAsync("Shared/Utils/_Toast", new ToastViewModel
+{
+    Header = "Info",
+    Body = TempData["Info"]!.ToString()!
+})
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assetsClient/css/rating.css">
+    <!-- Option 1: Include in HTML -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+}
+
+<main class="main">
+
+    <section class="box-section box-breadcrumb background-body">
+        <div class="container">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="@(Model.ReturnUrl ?? "/")">Home</a>
+                    <span class="arrow-right">
+                        <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 11L6 6L1 1" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+                </li>
+                <li>
+                    <span class="text-breadcrumb">
+                        @Model.CurrentCar.Brand
+                        @Model.CurrentCar.Model
+                        @Model.CurrentCar.Year
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="box-section background-body">
+        <div class="container">
+            <div class="tour-rate">
+                <div class="rate-element">
+                    <span>@Model.AverageRating <span class="text-sm-medium neutral-500">(@Model.TotalReviews reviews)</span></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="tour-title-main">
+                        <h4 class="neutral-1000">
+                            @Model.CurrentCar.Brand
+                            @Model.CurrentCar.Model
+                            @Model.CurrentCar.Year
+                        </h4>
+                    </div>
+                </div>
+                @if (TempData["WishSuccess"] != null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        @TempData["WishSuccess"]
+                    </div>
+                }
+
+                @if (TempData["WishError"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @TempData["WishError"]
+                    </div>
+                }
+            </div>
+            <div class="tour-metas">
+                <div class="tour-meta-left">
+                    <p class="text-md-medium neutral-1000 mr-20 tour-location">
+                        <svg class="invert" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M7.99967 0C4.80452 0 2.20508 2.59944 2.20508 5.79456C2.20508 9.75981 7.39067 15.581 7.61145 15.8269C7.81883 16.0579 8.18089 16.0575 8.38789 15.8269C8.60867 15.581 13.7943 9.75981 13.7943 5.79456C13.7942 2.59944 11.1948 0 7.99967 0ZM7.99967 8.70997C6.39211 8.70997 5.0843 7.40212 5.0843 5.79456C5.0843 4.187 6.39214 2.87919 7.99967 2.87919C9.6072 2.87919 10.915 4.18703 10.915 5.79459C10.915 7.40216 9.6072 8.70997 7.99967 8.70997Z" fill="#101010"></path>
+                        </svg>
+                        2356 Oakwood Drive, Suite 18, Warszawa
+                    </p>
+                </div>
+                <div class="tour-meta-right">
+                    <form asp-page-handler="WishListForm" method="post">
+
+                        <input type="hidden" asp-for="RentCar.CarId" value="@Model.CurrentCar.Id" />
+
+                        <a class="btn btn-share" href="https://www.facebook.com/sharer/sharer.php?u=@pageUrl">
+                            <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13 11.5332C12.012 11.5332 11.1413 12.0193 10.5944 12.7584L5.86633 10.3374C5.94483 10.0698 6 9.79249 6 9.49989C6 9.10302 5.91863 8.72572 5.77807 8.37869L10.7262 5.40109C11.2769 6.04735 12.0863 6.46655 13 6.46655C14.6543 6.46655 16 5.12085 16 3.46655C16 1.81225 14.6543 0.466553 13 0.466553C11.3457 0.466553 10 1.81225 10 3.46655C10 3.84779 10.0785 4.20942 10.2087 4.54515L5.24583 7.53149C4.69563 6.90442 3.8979 6.49989 3 6.49989C1.3457 6.49989 0 7.84559 0 9.49989C0 11.1542 1.3457 12.4999 3 12.4999C4.00433 12.4999 4.8897 11.9996 5.4345 11.2397L10.147 13.6529C10.0602 13.9331 10 14.2249 10 14.5332C10 16.1875 11.3457 17.5332 13 17.5332C14.6543 17.5332 16 16.1875 16 14.5332C16 12.8789 14.6543 11.5332 13 11.5332Z" fill=""></path>
+                            </svg>
+                            Share
+                        </a>
+                        <button type="submit" class="btn btn-wishlish">
+                            @if (Model.IsCarInWishList)
+                            {
+                                <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.2222 2.3638C4.34203 0.243977 7.65342 0.0419426 10.0004 1.7577C12.3473 0.0419426 15.6587 0.243977 17.7786 2.3638C20.1217 4.70695 20.1217 8.50594 17.7786 10.8491L12.1217 16.5059C10.9501 17.6775 9.05063 17.6775 7.87906 16.5059L2.2222 10.8491C-0.120943 8.50594 -0.120943 4.70695 2.2222 2.3638Z" fill="red"></path>
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.2222 2.3638C4.34203 0.243977 7.65342 0.0419426 10.0004 1.7577C12.3473 0.0419426 15.6587 0.243977 17.7786 2.3638C20.1217 4.70695 20.1217 8.50594 17.7786 10.8491L12.1217 16.5059C10.9501 17.6775 9.05063 17.6775 7.87906 16.5059L2.2222 10.8491C-0.120943 8.50594 -0.120943 4.70695 2.2222 2.3638Z" fill=""></path>
+                                </svg>
+                            }
+                            Wishlish
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="box-collapse-expand">
+                        <div class="group-collapse-expand">
+                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOverview" aria-expanded="false" aria-controls="collapseOverview">
+                                <h6>Overview</h6>
+                                <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L6 6L11 1" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+
+                            <div class="list-feature-car">
+                                <div class="item-feature-car w-md-25">
+                                    <div class="item-feature-car-inner">
+                                        <div class="feature-image"><img src="assetsClient/imgs/page/car/km.svg" alt="RentalSystem"></div>
+                                        <div class="feature-info">
+                                            <p class="text-md-medium neutral-1000">12000</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-feature-car w-md-25">
+                                    <div class="item-feature-car-inner">
+                                        <div class="feature-image">
+                                            <img src="/assetsClient/imgs/template/limited.png">
+                                        </div>
+                                        <div class="feature-info">
+                                            <p class="text-md-medium neutral-1000">
+                                                No limits
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-feature-car w-md-25">
+                                    <div class="item-feature-car-inner">
+                                        <div class="feature-image"><img src="assetsClient/imgs/page/car/auto.svg" alt="RentalSystem"></div>
+                                        <div class="feature-info">
+                                            <p class="text-md-medium neutral-1000">Automatic</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-feature-car w-md-25">
+                                    <div class="item-feature-car-inner">
+                                        <div class="feature-image"><img src="assetsClient/imgs/page/car/seat.svg" alt="RentalSystem"></div>
+                                        <div class="feature-info">
+                                            <p class="text-md-medium neutral-1000">5 seats</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-feature-car w-md-25">
+                                    <div class="item-feature-car-inner">
+                                        <div class="feature-image"><img src="assetsClient/imgs/page/car/bag.svg" alt="RentalSystem"></div>
+                                        <div class="feature-info">
+                                            <p class="text-md-medium neutral-1000">3 Bags</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-feature-car w-md-25">
+                                    <div class="item-feature-car-inner">
+                                        <div class="feature-image"><img src="assetsClient/imgs/page/car/suv.svg" alt="RentalSystem"></div>
+                                        <div class="feature-info">
+                                            <p class="text-md-medium neutral-1000">Sedan</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-feature-car w-md-25">
+                                    <div class="item-feature-car-inner">
+                                        <div class="feature-image"><img src="assetsClient/imgs/page/car/door.svg" alt="RentalSystem"></div>
+                                        <div class="feature-info">
+                                            <p class="text-md-medium neutral-1000">White</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-feature-car w-md-25">
+                                    <div class="item-feature-car-inner">
+                                        <div class="feature-image"><img src="assetsClient/imgs/page/car/lit.svg" alt="RentalSystem"></div>
+                                        <div class="feature-info">
+                                            <p class="text-md-medium neutral-1000">2,5</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="collapse show" id="collapseOverview">
+                                <div class="card card-body">
+                                    <p>Introducing the epitome of modern sophistication in the realm of compact SUVs – the Seltos K3. Dressed in a captivating blue hue that exudes elegance and flair, this dynamic vehicle stands as a testament to innovation and style. With its sleek design accentuated by striking dark wheels, the Seltos K3 is not merely a mode of transportation but a statement of refined taste and contemporary living.</p>
+                                    <p>
+                                        <img src="@Model.CurrentCar.Image" alt="@Model.CurrentCar.Brand" />
+                                    </p>
+                                    <p>Prepare to embark on a journey where cutting-edge technology meets unparalleled comfort, all wrapped in a package of unparalleled aesthetics. Join us as we delve into the world of the Seltos K3, where every detail is crafted to elevate your driving experience to new heights.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group-collapse-expand">
+                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#collapseItinerary" aria-expanded="false" aria-controls="collapseItinerary">
+                                <h6>Included in the price</h6>
+                                <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L6 6L11 1" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                            <div class="collapse show" id="collapseItinerary">
+                                <div class="card card-body">
+                                    <ul class="list-checked-green">
+                                        <li>Free cancellation up to 48 hours before pick-up</li>
+                                        <li>Collision Damage Waiver with $700 deductible</li>
+                                        <li>Theft Protection with ₫66,926,626 excess</li>
+                                        <li>Unlimited mileage</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group-collapse-expand">
+                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#collapseQuestion" aria-expanded="false" aria-controls="collapseQuestion">
+                                <h6>Question &amp; Answers</h6>
+                                <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L6 6L11 1" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                            <div class="collapse show" id="collapseQuestion">
+                                <div class="card card-body">
+                                    <div class="list-questions">
+                                        <div class="item-question">
+                                            <div class="head-question">
+                                                <p class="text-md-bold neutral-1000">Is The High Roller suitable for all ages?</p>
+                                            </div>
+                                            <div class="content-question">
+                                                <p class="text-sm-medium neutral-800">Absolutely! The High Roller offers a family-friendly experience suitable for visitors of all ages. Children must be accompanied by an adult.</p>
+                                            </div>
+                                        </div>
+                                        <div class="item-question active">
+                                            <div class="head-question">
+                                                <p class="text-md-bold neutral-1000">Can I bring food or drinks aboard The High Roller?</p>
+                                            </div>
+                                            <div class="content-question">
+                                                <p class="text-sm-medium neutral-800">Outside food and beverages are not permitted on The High Roller. However, there are nearby dining options at The LINQ Promenade where you can enjoy a meal before or after your ride.</p>
+                                            </div>
+                                        </div>
+                                        <div class="item-question">
+                                            <div class="head-question">
+                                                <p class="text-md-bold neutral-1000">Is The High Roller wheelchair accessible?</p>
+                                            </div>
+                                            <div class="content-question">
+                                                <p class="text-sm-medium neutral-800">es, The High Roller cabins are wheelchair accessible, making it possible for everyone to enjoy the breathtaking views of Las Vegas.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="group-collapse-expand" id="reviews">
+                            <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReviews" aria-expanded="false" aria-controls="collapseReviews">
+                                <h6>Rate &amp; Reviews</h6>
+                                <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L6 6L11 1" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                            <div class="collapse show" id="collapseReviews">
+                                <div class="card card-body">
+                                    <div class="head-reviews">
+                                        <div class="review-left">
+                                            <div class="review-info-inner">
+                                                <h6 class="neutral-1000">@Model.AverageRating / 5</h6>
+                                                <p class="text-sm-medium neutral-400">(@Model.TotalReviews reviews)</p>
+                                            </div>
+                                        </div>
+                                        <div class="review-right">
+                                            <div class="review-progress">
+                                                <div class="item-review-progress">
+                                                    <div class="text-rv-progress">
+                                                        <p class="text-sm-bold">Overall Rating</p>
+                                                    </div>
+                                                    <div class="bar-rv-progress">
+                                                        <div class="progress">
+                                                            <div class="progress-bar" style="width: @((Model.AverageRating / 5) * 100)%"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-avarage">
+                                                        <p>@Model.AverageRating/5</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <ul class="list-group" style="padding:0px">
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Free cancellation up to 48 hours before pick-up
+                                                    <span class="badge bg-success rounded-pill">Included</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Collision Damage Waiver with $700 deductible
+                                                    <span class="badge bg-warning text-dark rounded-pill">Risk</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Theft Protection with ₫66,926,626 excess
+                                                    <span class="badge bg-danger rounded-pill">Alert</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Unlimited mileage
+                                                    <span class="badge bg-info text-dark rounded-pill">Benefit</span>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="list-reviews">
+                                        @foreach (Review review in Model.Reviews)
+                                        {
+                                            <div class="item-review">
+                                                <div class="head-review">
+                                                    <div class="author-review">
+                                                        <img src="@(review.User.Profile.ProfileImage ?? "assets/images/user-grid/user-grid-img13.png")" alt="client">
+                                                        <div class="author-info">
+                                                            <p class="text-lg-bold">@review.User.FullName</p>
+                                                            <p class="text-sm-medium neutral-500">@review.CreatedAt</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="rating">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            <i class="bi bi-star@(review.Rating >= i ? "-fill":"")"></i>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="content-review">
+                                                    <p class="text-sm-medium neutral-800">@review.Message</p>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <form method="get" id="paginationForm" class="pagination-container">
+                                        <input type="hidden" name="id" value="@Model.CurrentCar.Id" />
+                                        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+
+                                        <div class="pagination-buttons">
+                                            @if (Model.Page > 1)
+                                            {
+                                                <button type="submit" name="page" value="@((Model.Page - 1))" class="btn btn-primary">Previous</button>
+                                            }
+
+                                            @if (Model.Page < Model.TotalPages)
+                                            {
+                                                <button type="submit" name="page" value="@((Model.Page + 1))" class="btn btn-primary">Next</button>
+                                            }
+                                        </div>
+
+                                        <p class="page-info">Page @Model.Page of @Model.TotalPages</p>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        @*Review section*@
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="group-collapse-expand" id="reviewArea">
+
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div class="alert alert-success" role="alert">
+                                        @TempData["Success"]
+                                    </div>
+                                }
+
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div class="alert alert-danger" role="alert">
+                                        @TempData["Error"]
+                                    </div>
+                                }
+
+                                <button class="btn btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddReview" aria-expanded="false" aria-controls="collapseAddReview">
+                                    <h6>Add a review</h6>
+                                    <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1L6 6L11 1" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div class="collapse show" id="collapseAddReview">
+                                    <div class="card card-body">
+                                        <div class="box-form-reviews">
+                                            <form asp-page-handler="ReviewForm" method="post">
+
+                                                <input type="hidden" asp-for="Review.CarId" value="@Model.CurrentCar.Id" />
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="d-flex justify-content-center mt-5">
+                                                            <div class="text-center mb-5">
+                                                                <div class="rating mb-3">
+                                                                    <input type="number" asp-for="Review.Rate" hidden value="1" />
+                                                                    <i class='bi bi-star star' style="--i: 0;"></i>
+                                                                    <i class='bi bi-star star' style="--i: 1;"></i>
+                                                                    <i class='bi bi-star star' style="--i: 2;"></i>
+                                                                    <i class='bi bi-star star' style="--i: 3;"></i>
+                                                                    <i class='bi bi-star star' style="--i: 4;"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <textarea asp-for="Review.Message" class="form-control" placeholder="Your comment"></textarea>
+                                                            <span asp-validation-for="Review.Message" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <button type="submit" class="btn btn-primary">
+                                                            Submit review
+                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M8 15L15 8L8 1M15 8L1 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+                @*Side bar section*@
+                <div class="col-lg-4">
+                    <div class="sidebar-banner">
+                        <div class="p-4 background-body border rounded-3">
+                            <p class="text-xl-bold neutral-1000 mb-4">Get Started</p>
+
+                            <button type="button" class="btn btn-primary w-100 rounded-3 py-3 mb-3" data-bs-toggle="modal" data-bs-target="#myModal">
+                                Schedule Test Drive
+                                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.5 15L15.5 8L8.5 1M15.5 8L1.5 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+
+                            <button data-bs-toggle="modal" data-bs-target="#myModalOffer" class="btn btn-book bg-2">
+                                Make An Offer Price
+                                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.5 15L15.5 8L8.5 1M15.5 8L1.5 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    @*Form area*@
+                    <div class="booking-form">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <form asp-page-handler="RentForm" method="post">
+
+                                <input type="hidden" asp-for="RentCar.CarId" value="@Model.CurrentCar.Id" />
+                                <input type="hidden" asp-for="CurrentCar.Price" id="carPrice" value="@Model.CurrentCar.Price" />
+                                <input type="hidden" asp-for="RentCar.TotalToPay" id="total-to-pay" />
+
+                                <div class="head-booking-form">
+                                    <p class="text-xl-bold neutral-1000">Rent This Vehicle</p>
+                                </div>
+                                <div class="content-booking-form">
+
+                                    <div class="item-line-booking border-bottom-0 pb-0">
+                                        <strong class="text-md-bold neutral-1000">Pick-Up</strong>
+                                        <div class="input-calendar">
+                                            <input asp-for="RentCar.StartDate" id="startDate" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                        </div>
+                                    </div>
+                                    <div class="item-line-booking">
+                                        <strong class="text-md-bold neutral-1000">Drop-Off</strong>
+                                        <div class="input-calendar">
+                                            <input asp-for="RentCar.EndDate" id="endDate" class="form-control" type="date" value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")">
+                                        </div>
+                                    </div>
+
+                                    <div class="item-line-booking">
+                                        <div class="box-tickets">
+                                            <strong class="text-md-bold neutral-1000">Add Extra:</strong>
+                                            <div class="line-booking-tickets">
+                                                <div class="item-ticket">
+                                                    <ul class="list-filter-checkbox">
+                                                        <li>
+                                                            <label class="cb-container">
+                                                                <input asp-for="RentCar.IsGPSNavigationSystem" type="checkbox" class="extra-item" data-price="25"><span class="text-md-medium">GPS Navigation System </span><span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="include-price">
+                                                    <p class="text-md-bold neutral-1000">$25.00</p>
+                                                </div>
+                                            </div>
+                                            <div class="line-booking-tickets">
+                                                <div class="item-ticket">
+                                                    <ul class="list-filter-checkbox">
+                                                        <li>
+                                                            <label class="cb-container">
+                                                                <input asp-for="RentCar.ChildSeat" type="checkbox" class="extra-item" data-price="32"><span class="text-md-medium">Child Seat </span><span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="include-price">
+                                                    <p class="text-md-bold neutral-1000">$32.00</p>
+                                                </div>
+                                            </div>
+                                            <div class="line-booking-tickets">
+                                                <div class="item-ticket">
+                                                    <ul class="list-filter-checkbox">
+                                                        <li>
+                                                            <label class="cb-container">
+                                                                <input asp-for="RentCar.AdditionalDriver" type="checkbox" class="extra-item" data-price="25"><span class="text-md-medium">Additional Driver </span><span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="include-price">
+                                                    <p class="text-md-bold neutral-1000">$25.00</p>
+                                                </div>
+                                            </div>
+                                            <div class="line-booking-tickets">
+                                                <div class="item-ticket">
+                                                    <ul class="list-filter-checkbox">
+                                                        <li>
+                                                            <label class="cb-container">
+                                                                <input asp-for="RentCar.InsuranceCoverage" type="checkbox" class="extra-item" data-price="52"><span class="text-md-medium">Insurance Coverage </span><span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="include-price">
+                                                    <p class="text-md-bold neutral-1000">$52.00</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="item-line-booking last-item">
+                                        <strong class="text-md-bold neutral-1000">Total Payable</strong>
+                                        <div class="line-booking-right">
+                                            <p id="total-payable" class="text-xl-bold neutral-1000">$0.00</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="box-button-book">
+                                        <button type="submit" class="btn btn-book">
+                                            Book Now
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8 15L15 8L8 1M15 8L1 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="box-need-help">
+                                        <a href="#">
+                                            <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M2.83366 3.66667C2.83366 1.92067 4.25433 0.5 6.00033 0.5C7.74633 0.5 9.16699 1.92067 9.16699 3.66667C9.16699 5.41267 7.74633 6.83333 6.00033 6.83333C4.25433 6.83333 2.83366 5.41267 2.83366 3.66667ZM8.00033 7.83333H4.00033C1.88699 7.83333 0.166992 9.55333 0.166992 11.6667C0.166992 12.678 0.988992 13.5 2.00033 13.5H10.0003C11.0117 13.5 11.8337 12.678 11.8337 11.6667C11.8337 9.55333 10.1137 7.83333 8.00033 7.83333Z" fill=""></path>
+                                            </svg>
+                                            Need some help?
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            @*Если пользователь не авторизован*@
+                            <div class="sidebar-left border-1 background-card" style="border:none">
+                                <h6 class="text-xl-bold neutral-1000">Rent a car</h6>
+
+                                <p class="text-sm-medium neutral-800 mb-2">To rent a car, please Sign In or Sign Up:</p>
+                                <ul class="text-md neutral-400">
+                                    <li>
+                                        <a href="/login">
+                                            <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                                <path d="M1 12C1 12 0 12 0 11C0 10 1 7 6 7C11 7 12 10 12 11C12 12 11 12 11 12H1ZM6 6C6.79565 6 7.55871 5.68393 8.12132 5.12132C8.68393 4.55871 9 3.79565 9 3C9 2.20435 8.68393 1.44129 8.12132 0.87868C7.55871 0.316071 6.79565 0 6 0C5.20435 0 4.44129 0.316071 3.87868 0.87868C3.31607 1.44129 3 2.20435 3 3C3 3.79565 3.31607 4.55871 3.87868 5.12132C4.44129 5.68393 5.20435 6 6 6Z" fill="#101010"></path>
+                                            </svg>
+                                            <span style="margin-left:3px">Sign In</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/register">
+                                            <svg xmlns="http://www.w3.org/2000/svg" style="height:16px" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 492.91 510.02"><path d="M379.41 283.02c62.68 0 113.5 50.82 113.5 113.5s-50.82 113.5-113.5 113.5c-38.41 0-72.35-19.08-92.89-48.27H24.47C3.5 460.15-1.54 445.06.38 427.65c11.48-102.62 126.59-72.93 172.86-114.59 15.18 44.7 62.18 61.05 98.69 46.91 15.21-44.75 57.58-76.95 107.48-76.95zm-206.77-38.04c8.76 13.89 17.93 28.1 29.3 38.54 10.96 10.01 24.25 16.81 41.82 16.85 19.05.04 32.94-7 44.27-17.57 11.77-11 21.01-26.09 30.18-41.14l24.57-40.5c4.57-10.49 6.25-17.46 5.2-21.58-.63-2.44-3.32-3.64-7.92-3.84-5.3-.23-9.45.46-15.01-.32l8.41-37.26c-62.48 9.84-109.19-36.55-175.19-9.29l4.76 43.91c-2.6.16-5.16.03-7.48-.28-37.9 1.24 9.6 60.59 17.09 72.48zm175.9-80.41c6.05 1.84 9.93 5.69 11.53 11.89 1.76 6.88-.16 16.57-6 29.82-.12.24-.2.48-.36.72l-24.86 40.94c-9.6 15.77-19.29 31.62-32.29 43.75-13.45 12.6-30.02 20.97-52.68 20.89-21.13-.04-37.1-8.12-50.15-20.09C177.96 278 105.2 186.95 137.7 165.01a27.24 27.24 0 015.28-2.68c-1.44-18.81-1.92-42.54-1.04-62.4.48-4.68 1.4-9.4 2.68-14.13 5.57-19.93 19.57-35.98 36.86-46.98 9.57-6.09 20.02-10.69 30.9-13.73 6.93-1.96-5.88-24.13 1.24-24.81 34.63-3.57 90.7 28.05 114.87 54.23 12.09 13.08 19.73 30.5 21.37 53.47l-1.32 56.59zm10.86 183.6l-.01-2.65c.08-5.51 1.15-9.13 8.93-9.02l19.87.25c4.13-.02 6.89.79 8.78 2.81 1.86 1.98 2.5 4.76 2.46 8.7l.01 27.65 29.24-.01c5.42.08 8.99 1.14 8.87 9.11l-.23 20.59c.02 4.21-.76 7.02-2.67 8.95-1.95 1.96-4.68 2.63-8.56 2.59l-26.65.01-.01 27.88c.01 3.81-.64 6.5-2.46 8.45-1.89 2.01-4.65 2.82-8.78 2.8l-19.89.25c-7.75.12-8.82-3.5-8.91-9.01l.01-30.37-26.93-.01c-3.74.02-6.38-.67-8.3-2.59-1.92-1.93-2.69-4.74-2.67-8.94l-.24-20.6c-.12-7.97 3.46-9.03 8.88-9.11l29.26.01v-27.74zm20.01-48.5c53.49 0 96.85 43.36 96.85 96.85 0 53.49-43.36 96.85-96.85 96.85-53.49 0-96.85-43.36-96.85-96.85 0-53.49 43.36-96.85 96.85-96.85z"></path></svg>
+                                            Sign Up
+                                        </a>
+                                    </li>
+                                </ul>
+                                <p class="text-sm-medium neutral-800 mt-2">Also you can rent a car by calling or sending an e-mail:</p>
+                                <div class="mt-2 mb-2">
+                                    <p class="text-md neutral-400 icon-email">rentcar@carento.com</p>
+                                    <p class="text-md neutral-400 icon-email">support@carento.com</p>
+                                    <p class="text-md neutral-400 icon-address">+1 222-555-33-99</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="sidebar-left border-1 background-card">
+                        <h6 class="text-xl-bold neutral-1000">Listed by</h6>
+                        <div class="box-sidebar-content">
+                            <div class="box-agent-support border-bottom pb-3 mb-3">
+                                <div class="card-author">
+                                    <div class="me-2"><img src="assets/images/user-list/user-list1.png" alt="RentalSystem"></div>
+                                    <div class="card-author-info">
+                                        <p class="text-lg-bold neutral-1000">@Model.CurrentCar.Dealer.FirstName @Model.CurrentCar.Dealer.LastName</p>
+                                        <p class="text-sm-medium neutral-500">Work experience: @Model.CurrentCar.Dealer.WorkExperience</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-info-contact">
+                                <p class="text-md-medium mobile-phone neutral-1000"><span class="text-md-bold">Mobile:</span> @Model.CurrentCar.Dealer.Mobile</p>
+                                <p class="text-md-medium email neutral-1000"><span class="text-md-bold">Email:</span> @Model.CurrentCar.Dealer.Email</p>
+                                <p class="text-md-medium whatsapp neutral-1000"><span class="text-md-bold">WhatsApp:</span> @Model.CurrentCar.Dealer.WhatsApp</p>
+                                <p class="text-md-medium fax neutral-1000"><span class="text-md-bold">Fax:</span> @Model.CurrentCar.Dealer.Fax</p>
+                            </div>
+                            <div class="box-link-bottom">
+                                <a class="btn btn-primary py-3 w-100 rounded-3" href="#">
+                                    All items by this dealer
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 15L15 8L8 1M15 8L1 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<!-- Test Drive Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Schedule Test Drive</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-page-handler="TestDriveForm" method="post">
+                <div class="modal-body">
+                    <p class="mb-2">
+                        Leave your contact dates and select your preferred date for a test drive.
+                    </p>
+
+                    <input type="hidden" asp-for="@Model.TestDrive.CarId" value="@Model.CurrentCar.Id" />
+
+                    <div class="form-group">
+                        <span asp-validation-for="@Model.TestDrive.Name" class="text-danger"></span>
+                        <input asp-for="@Model.TestDrive.Name" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="Name" />
+                    </div>
+
+                    <div class="form-group">
+                        <span asp-validation-for="@Model.TestDrive.Phone" class="text-danger"></span>
+                        <input asp-for="@Model.TestDrive.Phone" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="Phone" />
+                    </div>
+
+                    <div class="form-group">
+                        <span asp-validation-for="@Model.TestDrive.Date" class="text-danger"></span>
+                        <input asp-for="@Model.TestDrive.Date" class="form-control h-56-px bg-neutral-50 radius-12" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Offer Price Modal -->
+<div class="modal fade" id="myModalOffer" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Offer your Price</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-page-handler="TestDriveForm" method="post">
+                <div class="modal-body">
+                    <p class="mb-2">
+                        For this car, this feature is disabled.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assetsClient/js/priceCalc.js"></script>
+    <script src="~/assetsClient/js/rating.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainLayer", "DomainLayer\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfrastructureLayer", "InfrastructureLayer\InfrastructureLayer.csproj", "{71D5A882-AE5B-40AF-820D-CD7D0166E473}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailService", "EmailService\EmailService.csproj", "{4F1CEEA0-6653-47F5-8AEE-1EC3D2D6CA21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{71D5A882-AE5B-40AF-820D-CD7D0166E473}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71D5A882-AE5B-40AF-820D-CD7D0166E473}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71D5A882-AE5B-40AF-820D-CD7D0166E473}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F1CEEA0-6653-47F5-8AEE-1EC3D2D6CA21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F1CEEA0-6653-47F5-8AEE-1EC3D2D6CA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F1CEEA0-6653-47F5-8AEE-1EC3D2D6CA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F1CEEA0-6653-47F5-8AEE-1EC3D2D6CA21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

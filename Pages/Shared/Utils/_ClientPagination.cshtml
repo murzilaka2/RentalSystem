@@ -1,0 +1,45 @@
+﻿@using RentalSystem.Models
+@model PaginationModel
+
+@{
+    string baseQuery = "";
+    if (Model.Filter != null) baseQuery = $"&filter={Model.Filter}";
+    if (Model.Status != null) baseQuery = $"&status={Model.Status}";
+    if (Model.SortItem != null) baseQuery = $"&sortItem={Model.SortItem}";
+    if (Model.SortItem != null) baseQuery = $"&sortItem={Model.SortItem}";
+
+
+    string carTypesQuery = "";
+    if (Model.CarTypesInt != null)
+    {
+        carTypesQuery = "&carTypesInt=" + string.Join("&carTypesInt=", Model.CarTypesInt ?? new List<int>());
+    }
+    if (Model.CarBrands != null)
+    {
+        carTypesQuery = "&CarBrands=" + string.Join("&CarBrands=", Model.CarBrands ?? new List<string>());
+    }
+
+}
+
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
+    <span>Showing @Model.FirstItemIndex to @Model.LastItemIndex of @Model.TotalItems entries</span>
+    <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+            <a class="page-link" href="@($"{Model.PageUrl}?Desc={Model.Desc}&page={Model.Page - 1}{baseQuery}&pageSize={Model.PageSize}&priceRange={Model.PriceRange}{carTypesQuery}")">&laquo;</a>
+        </li>
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.Page ? "active" : "")">
+                <a class="page-link" href="@($"{Model.PageUrl}?Desc={Model.Desc}&page={i}{baseQuery}&pageSize={Model.PageSize}&priceRange={Model.PriceRange}{carTypesQuery}")">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+            <a class="page-link" href="@($"{Model.PageUrl}?Desc={Model.Desc}&page={Model.Page + 1}{baseQuery}&pageSize={Model.PageSize}&priceRange={Model.PriceRange}{carTypesQuery}")">&raquo;</a>
+        </li>
+    </ul>
+</div>
+
+
+
