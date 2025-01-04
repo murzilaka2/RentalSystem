@@ -78,7 +78,8 @@ namespace RentalSystem.Data
                         [Mobile] NVARCHAR(20) NOT NULL,
                         [Email] NVARCHAR(255) NOT NULL UNIQUE,
                         [WhatsApp] NVARCHAR(20) NULL,
-                        [Fax] NVARCHAR(20) NULL
+                        [Fax] NVARCHAR(20) NULL,
+                        [PhotoUrl] NVARCHAR(300) NULL
                     );                                               
                     """;
                 await command.ExecuteNonQueryAsync();
@@ -245,6 +246,7 @@ namespace RentalSystem.Data
                 Mobile = "1-222-333-4444",
                 WhatsApp = "1-222-333-4444",
                 WorkExperience = 5,
+                PhotoUrl = "assets/images/user-list/user-list1.png",
             });
 
             await dealers.AddDealerAsync(new Dealer
@@ -256,8 +258,32 @@ namespace RentalSystem.Data
                 Mobile = "1-321-432-3190",
                 WhatsApp = "1-321-432-3190",
                 WorkExperience = 2,
+                PhotoUrl = "assets/images/user-list/user-list2.png",
             });
 
+            await dealers.AddDealerAsync(new Dealer
+            {
+                Email = "emma-wilson@gmail.com",
+                Fax = "1-321-432-3191",
+                FirstName = "Emma",
+                LastName = "Wilson",
+                Mobile = "1-321-432-3191",
+                WhatsApp = "1-321-432-3191",
+                WorkExperience = 4,
+                PhotoUrl = "assets/images/user-list/user-list4.png",
+            });
+
+            await dealers.AddDealerAsync(new Dealer
+            {
+                Email = "michael-smith@gmail.com",
+                Fax = "1-321-432-3192",
+                FirstName = "Michael",
+                LastName = "Smith",
+                Mobile = "1-321-432-3192",
+                WhatsApp = "1-321-432-3192",
+                WorkExperience = 5,
+                PhotoUrl = "assets/images/user-list/user-list3.png",
+            });
 
             //Cars
             Car camry = new Car

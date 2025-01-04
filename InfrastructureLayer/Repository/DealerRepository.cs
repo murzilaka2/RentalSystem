@@ -17,7 +17,7 @@ namespace InfrastructureLayer.Repository
 
         public async Task<IEnumerable<Dealer>> GetDealersAsync()
         {
-            string query = "SELECT [Id],[FirstName],[LastName],[WorkExperience],[Mobile],[Email] FROM [Dealers]";
+            string query = "SELECT [Id],[FirstName],[LastName],[WorkExperience],[Mobile],[Email],[PhotoUrl] FROM [Dealers]";
             List<Dealer> dealers = new List<Dealer>();
 
             await _queryBuilder.ExecuteQueryAsync(query, reader =>
@@ -32,6 +32,7 @@ namespace InfrastructureLayer.Repository
                         WorkExperience = reader.GetInt32(3),
                         Mobile = reader.GetString(4),
                         Email = reader.GetString(5),
+                        PhotoUrl = reader.GetString(6),
                     };
                     dealers.Add(dealer);
                 }
@@ -41,8 +42,8 @@ namespace InfrastructureLayer.Repository
         }
         public async Task<bool> AddDealerAsync(Dealer dealer)
         {
-            string query = @"INSERT INTO [Dealers] ([FirstName], [LastName], [WorkExperience], [Mobile], [Email], [WhatsApp], [Fax]) 
-                     VALUES (@FirstName, @LastName, @WorkExperience, @Mobile, @Email, @WhatsApp, @Fax)";
+            string query = @"INSERT INTO [Dealers] ([FirstName], [LastName], [WorkExperience], [Mobile], [Email], [WhatsApp], [Fax], [PhotoUrl]) 
+                     VALUES (@FirstName, @LastName, @WorkExperience, @Mobile, @Email, @WhatsApp, @Fax, @PhotoUrl)";
 
             SqlParameter[] parameters =
             {
@@ -52,7 +53,8 @@ namespace InfrastructureLayer.Repository
                 new SqlParameter("@Mobile", SqlDbType.NVarChar) { Value = dealer.Mobile },
                 new SqlParameter("@Email", SqlDbType.NVarChar) { Value = dealer.Email },
                 new SqlParameter("@WhatsApp", SqlDbType.NVarChar) { Value = (object?)dealer.WhatsApp ?? DBNull.Value },
-                new SqlParameter("@Fax", SqlDbType.NVarChar) { Value = (object?)dealer.Fax ?? DBNull.Value }
+                new SqlParameter("@Fax", SqlDbType.NVarChar) { Value = (object?)dealer.Fax ?? DBNull.Value },
+                new SqlParameter("@PhotoUrl", SqlDbType.NVarChar) { Value = (object?)dealer.PhotoUrl ?? DBNull.Value }
             };
 
             int rowsAffected = await _queryBuilder.ExecuteQueryAsync(query, parameters);
@@ -78,7 +80,8 @@ namespace InfrastructureLayer.Repository
                     d.[Mobile],
                     d.[Email],
                     d.[WhatsApp],
-                    d.[Fax]
+                    d.[Fax],
+                    d.[PhotoUrl]
                 FROM [Dealers] d
                 WHERE (@Filter IS NULL OR (d.FirstName LIKE '%' + @Filter + '%' OR d.LastName LIKE '%' + @Filter + '%'))
             )
@@ -111,13 +114,14 @@ namespace InfrastructureLayer.Repository
                         Mobile = reader.GetString(4),
                         Email = reader.GetString(5),
                         WhatsApp = reader.IsDBNull(6) ? null : reader.GetString(6),
-                        Fax = reader.IsDBNull(7) ? null : reader.GetString(7)
+                        Fax = reader.IsDBNull(7) ? null : reader.GetString(7),
+                        PhotoUrl = reader.IsDBNull(8) ? null : reader.GetString(8)
                     };
                     dealers.Add(dealer);
 
                     if (totalCount == 0)
                     {
-                        totalCount = reader.GetInt32(8);
+                        totalCount = reader.GetInt32(9);
                     }
                 }
             }, parameters);
@@ -143,7 +147,8 @@ namespace InfrastructureLayer.Repository
             d.[Mobile],
             d.[Email],
             d.[WhatsApp],
-            d.[Fax]
+            d.[Fax],
+            d.[PhotoUrl]
         FROM [Dealers] d
         WHERE (@Filter IS NULL OR (d.FirstName LIKE '%' + @Filter + '%' OR d.LastName LIKE '%' + @Filter + '%'))
     ),
@@ -162,7 +167,8 @@ namespace InfrastructureLayer.Repository
     FROM FilteredDealers d
     LEFT JOIN DealerWithCarsCount c ON d.Id = c.Id
     ORDER BY {orderByColumn} DESC
-    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+    SELECT COUNT(*) FROM [Dealers];";
 
             SqlParameter[] parameters = {
         new SqlParameter("@Filter", SqlDbType.NVarChar) { Value = (object)filterModel.Filter ?? DBNull.Value },
@@ -187,38 +193,44 @@ namespace InfrastructureLayer.Repository
                         Email = reader.GetString(5),
                         WhatsApp = reader.IsDBNull(6) ? null : reader.GetString(6),
                         Fax = reader.IsDBNull(7) ? null : reader.GetString(7),
-                        CarsCount = reader.GetInt32(8) 
+                        PhotoUrl = reader.GetString(8),
+                        CarsCount = reader.GetInt32(9) 
                     };
                     dealers.Add(dealer);
 
                     if (totalCount == 0)
                     {
-                        totalCount = reader.GetInt32(9);
+                        totalCount = reader.GetInt32(10);
                     }
                 }
             }, parameters);
 
             return (dealers, totalCount);
         }
-
         public async Task<Dealer?> GetDealerAsync(int id)
         {
             string query = @"
-            SELECT 
-                [Id],
-                [FirstName],
-                [LastName],
-                [WorkExperience],
-                [Mobile],
-                [Email],
-                [WhatsApp],
-                [Fax]
-            FROM [Dealers]
-            WHERE [Id] = @Id;";
+    SELECT 
+        d.[Id],
+        d.[FirstName],
+        d.[LastName],
+        d.[WorkExperience],
+        d.[Mobile],
+        d.[Email],
+        d.[WhatsApp],
+        d.[Fax],
+        d.[PhotoUrl],
+        ISNULL(COUNT(c.[Id]), 0) AS CarCount
+    FROM [Dealers] d
+    LEFT JOIN [Cars] c ON c.[DealerId] = d.[Id]
+    WHERE d.[Id] = @Id
+    GROUP BY 
+        d.[Id], d.[FirstName], d.[LastName], d.[WorkExperience], d.[Mobile], 
+        d.[Email], d.[WhatsApp], d.[Fax], d.[PhotoUrl];";
 
             SqlParameter[] parameters = {
-                new SqlParameter("@Id", SqlDbType.Int) { Value = id }
-            };
+        new SqlParameter("@Id", SqlDbType.Int) { Value = id }
+    };
 
             Dealer? dealer = null;
 
@@ -235,13 +247,16 @@ namespace InfrastructureLayer.Repository
                         Mobile = reader.GetString(4),
                         Email = reader.GetString(5),
                         WhatsApp = reader.IsDBNull(6) ? null : reader.GetString(6),
-                        Fax = reader.IsDBNull(7) ? null : reader.GetString(7)
+                        Fax = reader.IsDBNull(7) ? null : reader.GetString(7),
+                        PhotoUrl = reader.IsDBNull(8) ? null : reader.GetString(8),
+                        CarsCount = reader.GetInt32(9) 
                     };
                 }
             }, parameters);
 
             return dealer;
         }
+
         public async Task<bool> RemoveDealerAsync(int id)
         {
             string query = @"

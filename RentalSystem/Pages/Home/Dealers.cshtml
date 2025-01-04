@@ -1,6 +1,149 @@
 ﻿@page "/dealers"
+@using DomainLayer.Models
 @model DealersModel
 @{
     Layout = "_HomeLayout";
     ViewData["Title"] = "Dealers";
 }
+
+
+<main class="main">
+
+    @*Секция описания*@
+    <section class="section-box pt-50 background-body">
+        <div class="container">
+            <div class="row align-items-end">
+                <div class="col-md-8 wow fadeInUp">
+                    <h4 class="neutral-1000">Our Vehicle Fleet</h4>
+                    <p class="text-lg-medium neutral-500">Turning dreams into reality with versatile vehicles.</p>
+                </div>
+                <div class="col-md-4 wow fadeInUp">
+                    <div class="d-flex justify-content-end mt-md-0 mt-4">
+                        <a class="btn btn-primary rounded-3" href="/">
+                            Become a renter
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 15L15 8L8 1M15 8L1 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="box-section background-body border-bottom">
+        <div class="container">
+            <div class="row mt-30">
+                <!-- Фильтрация -->
+                <div class="mb-3">
+                    @await Html.PartialAsync("Utils/_Filter", Model.Pagination)
+                </div>
+
+                @foreach (Dealer dealer in Model.Dealers)
+                {
+                    <div class="col-lg-4 col-sm-6">
+                        <div class="card-contact card-dealer d-flex">
+                            <div class="card-image me-3">
+                                <div class="position-relative">
+                                    <img src="@dealer.PhotoUrl" alt="Carento">
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">
+                                    <p class="heading-6">@dealer.SelectName</p>
+                                    <p class="text-sm-medium neutral-500">Work experience: @dealer.WorkExperience</p>
+                                    <p class="text-md-medium mobile-phone neutral-1000"><span class="text-md-bold">Mobile:</span> @dealer.Mobile</p>
+                                    <p class="text-md-medium email neutral-1000"><span class="text-md-bold">Email:</span> @dealer.Email</p>
+                                    <p class="text-md-medium whatsapp neutral-1000"><span class="text-md-bold">WhatsApp:</span> @dealer.WhatsApp</p>
+                                    <p class="text-md-medium fax neutral-1000"><span class="text-md-bold">Fax:</span> @dealer.Fax</p>
+                                </div>
+                                <div class="card-method-contact2">
+                                    <a class="email text-xs-bold" href="/?dealerId=@dealer.Id" target="_blank">
+                                        @dealer.CarsCount Vehicles
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Пагинация -->
+            @await Html.PartialAsync("Utils/_Pagination", Model.Pagination)
+
+        </div>
+    </section>
+
+    <div class="page-header pt-50 background-body">
+        <div class="custom-container position-relative mx-auto">
+            <div class="bg-overlay rounded-12 overflow-hidden">
+                <img class="w-100 h-100 img-banner" src="assets/images/dealerBanner.png" alt="Carento">
+            </div>
+            <div class="container position-absolute z-1 top-50 start-50 translate-middle">
+                <h2 class="text-white">Dealer Listing</h2>
+                <span class="text-white text-xl-medium">Professional car rental people</span>
+            </div>
+            <div class="background-body position-absolute z-1 top-100 start-50 translate-middle px-3 py-2 rounded-12 border d-flex gap-3 d-none">
+                <a href="index.html" class="neutral-700 text-md-medium">Home</a>
+                <span>
+                    <img src="assets/imgs/template/icons/arrow-right.svg" alt="Carento">
+                </span>
+                <a href="dealer-listing.html#" class="neutral-1000 text-md-bold"></a>
+            </div>
+        </div>
+    </div>
+    <section class="section-cta-7 background-body py-96">
+        <div class="box-cta-6">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-5">
+                        <span class="bg-2 text-dark mb-4">Our Mission</span>
+                        <h4 class="mb-4 neutral-1000">Sell your car at a fair price. <br>Get started with us today.</h4>
+                        <p class="text-lg-medium neutral-500 mb-4">Our mission is to make car rental easy, accessible, and affordable for everyone. We believe that renting a car should be a hassle-free experience, and we're dedicated to ensuring that every customer finds the perfect vehicle for their journey.</p>
+                        <div class="row">
+                            <div class="col">
+                                <ul class="list-ticks-green list-ticks-green-2">
+                                    <li class="neutral-1000 pe-0">Explore a wide range of flexible rental options to suit your needs</li>
+                                    <li class="neutral-1000 pe-0">Comprehensive insurance coverage for complete peace of mind</li>
+                                    <li class="neutral-1000 pe-0">24/7 customer support for assistance anytime, anywhere</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a class="btn btn-primary mt-2" href="/login">
+                            Get Started Now
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 15L15 8L8 1M15 8L1 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 offset-lg-1 position-relative z-1 mt-lg-0 mt-4">
+                        <div class="d-flex flex-column gap-4">
+                            <div class="d-flex gap-4">
+                                <div class="position-relative">
+                                    <img class="bdrd8 w-100" src="assetsClient/imgs/cta/img-1.png" alt="Carento">
+                                </div>
+                                <div class="mt-auto">
+                                    <img class="bdrd8 w-100" src="assetsClient/imgs/cta/img-2.png" alt="Carento">
+                                </div>
+                            </div>
+                            <div class="d-flex gap-4">
+                                <div class="position-relative">
+                                    <img class="bdrd8 w-100" src="assetsClient/imgs/cta/img-3.png" alt="Carento">
+                                </div>
+                                <div class="position-relative">
+                                    <img class="bdrd8 w-100" src="assetsClient/imgs/cta/img-4.png" alt="Carento">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-overlay position-absolute bottom-0 end-0 h-75 background-brand-2 opacity-25 z-0 rounded-start-pill"></div>
+        </div>
+    </section>
+    <style>
+        input {
+            height: 35px;
+        }
+    </style>
+</main>

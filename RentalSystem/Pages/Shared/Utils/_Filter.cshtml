@@ -20,7 +20,7 @@
     <div class="navbar-search">
         <input type="text" class="bg-base h-40-px w-auto" name="filter" value="@Model.Filter" placeholder="Search">
     </div>
-    <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+    <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
         @foreach (var selectedItem in Model.SelectOptions)
         {
             if (Model.Status == selectedItem)

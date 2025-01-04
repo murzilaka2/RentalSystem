@@ -28,6 +28,10 @@ namespace RentalSystem.Pages.Admin.General_settings
 
         public void OnGet()
         {
+            LoadData();
+        }
+        private void LoadData()
+        {
             if (_jsonFilePath != null)
             {
                 var jsonData = System.IO.File.ReadAllText(_jsonFilePath);
@@ -76,6 +80,7 @@ namespace RentalSystem.Pages.Admin.General_settings
             TempData["ActiveTab"] = "HeaderContent";
             if (!ModelState.IsValid)
             {
+                LoadData();
                 return Page();
             }
 
@@ -94,11 +99,13 @@ namespace RentalSystem.Pages.Admin.General_settings
         public IActionResult OnPostFooterSettingsFormAsync()
         {
             TempData["ActiveTab"] = "FooterContent";
+            ModelState.Remove("Logo");
+            ModelState.Remove("MenuItems");
             if (!ModelState.IsValid)
             {
+                LoadData();
                 return Page();
             }
-
             try
             {
                 FooterData.Emails = FooterData.EmailsForTextArea.Split("\n").ToList();

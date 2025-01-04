@@ -19,9 +19,6 @@ System.Data.SqlClient
 1. https://yesicon.app/mage  (Пример использования: <iconify-icon icon="mage:image-plus" class="text-xl"></iconify-icon>  mage:image-plus)
 2. https://yesicon.app/solar (Пример использования: <iconify-icon icon="solar:diagram-down-bold" class="text-xl"></iconify-icon> solar:bus-bold)
 
-1. Сделать страницу с выводом диллеров и их количество авто, с возможностью
-просмотро автомобилей определенного диллера. (Toyota и т.д.) По адресу: /dealers
-
 Реализовать для админа:
 
 2. Отображение арендованных / не арендованных машин.

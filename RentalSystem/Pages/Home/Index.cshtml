@@ -43,6 +43,27 @@
 
                     @*Cars list*@
                     <div class="box-grid-tours wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
+
+
+                        @*Dealer info*@
+                        @if (Model.Dealer != null)
+                        {
+                            <div class="card-contact border-0 border-bottom rounded-0 d-flex">
+                                <div class="card-image me-3">
+                                    <div class="position-relative">
+                                        <img src="@Model.Dealer.PhotoUrl" style="height:70px" alt="rental">
+                                    </div>
+                                </div>
+                                <div class="card-info">
+                                    <div class="card-title">
+                                        <span class="heading-6">@Model.Dealer.SelectName</span>
+                                        <p class="text-md-medium neutral-500">@Model.Dealer.Email</p>
+                                        <span class="email text-xs-bold"> @Model.Dealer.CarsCount Vehicles </span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
                         <div class="row">
                             @foreach (Car car in Model.Cars)
                             {

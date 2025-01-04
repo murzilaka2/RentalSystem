@@ -17,7 +17,7 @@ namespace DomainLayer.Models
         public string Email { get; set; }
         public string? WhatsApp { get; set; }
         public string? Fax { get; set; }
-        public string PhotoUrl => "assets/images/user-list/user-list1.png";
+        public string PhotoUrl { get; set; }
 
         [NotMapped]
         public string SelectName => $"{FirstName} {LastName}";

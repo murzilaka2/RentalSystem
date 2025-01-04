@@ -70,7 +70,6 @@ namespace RentalSystem.Data
                 }
             }
         }
-
         public async Task GenerateCarsAsync(string connectionString, int count)
         {
             string createProcedureSql = $@"
@@ -112,7 +111,7 @@ namespace RentalSystem.Data
                     END,
                     CAST((RAND() * 6) + 2 AS INT), 
                     ROUND((RAND() * 450) + 50, 2),
-                    1
+                    CAST((RAND() * 4) + 1 AS INT)
                 );
 
                 SET @i = @i + 1;

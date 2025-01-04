@@ -648,7 +648,7 @@
                         <div class="box-sidebar-content">
                             <div class="box-agent-support border-bottom pb-3 mb-3">
                                 <div class="card-author">
-                                    <div class="me-2"><img src="assets/images/user-list/user-list1.png" alt="RentalSystem"></div>
+                                    <div class="me-2"><img src="@Model.CurrentCar.Dealer.PhotoUrl" alt="RentalSystem"></div>
                                     <div class="card-author-info">
                                         <p class="text-lg-bold neutral-1000">@Model.CurrentCar.Dealer.FirstName @Model.CurrentCar.Dealer.LastName</p>
                                         <p class="text-sm-medium neutral-500">Work experience: @Model.CurrentCar.Dealer.WorkExperience</p>
@@ -662,7 +662,7 @@
                                 <p class="text-md-medium fax neutral-1000"><span class="text-md-bold">Fax:</span> @Model.CurrentCar.Dealer.Fax</p>
                             </div>
                             <div class="box-link-bottom">
-                                <a class="btn btn-primary py-3 w-100 rounded-3" href="#">
+                                <a class="btn btn-primary py-3 w-100 rounded-3" href="/?dealerId=@Model.CurrentCar.Dealer.Id" target="_blank">
                                     All items by this dealer
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M8 15L15 8L8 1M15 8L1 8" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>

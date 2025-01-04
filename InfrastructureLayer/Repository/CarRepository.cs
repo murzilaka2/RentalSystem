@@ -156,6 +156,10 @@ namespace RentalSystem.Repository
                 ? " AND c.Brand IN (" + string.Join(", ", pagination.CarBrands.Select((_, i) => $"@Brand{i}")) + ")"
                 : "";
 
+            string dealerCondition = pagination.DealerId.HasValue
+                ? " AND c.DealerId = @DealerId"
+                : ""; // Условие для фильтрации по DealerId, если он передан
+
             string query = $@"
 WITH FilteredCars AS (
     SELECT 
@@ -173,9 +177,11 @@ WITH FilteredCars AS (
         c.[SeatsCount],
         c.[Price]
     FROM [Cars] c
-    WHERE (@Filter IS NULL OR (c.Brand LIKE '%' + @Filter + '%' OR c.Model LIKE '%' + @Filter + '%')) AND c.Price < @PriceRange
+    WHERE (@Filter IS NULL OR (c.Brand LIKE '%' + @Filter + '%' OR c.Model LIKE '%' + @Filter + '%')) 
+    AND c.Price < @PriceRange
     {carTypeCondition}
     {brandCondition}
+    {dealerCondition}  -- добавлено условие для фильтрации по DealerId
 ),
 CarStats AS (
     SELECT 
@@ -202,6 +208,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
         new SqlParameter("@PriceRange", SqlDbType.Decimal) { Value = pagination.PriceRange },
     };
 
+            // Добавление параметров для фильтрации по типам машин и брендам
             if (pagination.CarTypesInt != null)
             {
                 for (int i = 0; i < pagination.CarTypesInt.Count; i++)
@@ -216,6 +223,12 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
                 {
                     parameters.Add(new SqlParameter($"@Brand{i}", SqlDbType.NVarChar) { Value = pagination.CarBrands[i] });
                 }
+            }
+
+            // Добавление параметра для фильтрации по DealerId, если он передан
+            if (pagination.DealerId.HasValue)
+            {
+                parameters.Add(new SqlParameter("@DealerId", SqlDbType.Int) { Value = pagination.DealerId.Value });
             }
 
             List<Car> cars = new List<Car>();
@@ -277,7 +290,8 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
                    [d].[Mobile] AS DealerMobile,
                    [d].[Email] AS DealerEmail,
                    [d].[WhatsApp] AS DealerWhatsApp,
-                   [d].[Fax] AS DealerFax
+                   [d].[Fax] AS DealerFax,
+                   d.[PhotoUrl] AS DealerPhotoUrl
             FROM [Cars] AS [c]
             LEFT JOIN [Dealers] AS [d] ON [c].[DealerId] = [d].[Id]
             WHERE [c].[Id] = @CarId";
@@ -311,7 +325,8 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
                             Mobile = reader.IsDBNull(18) ? null : reader.GetString(18),
                             Email = reader.IsDBNull(19) ? null : reader.GetString(19),
                             WhatsApp = reader.IsDBNull(20) ? null : reader.GetString(20),
-                            Fax = reader.IsDBNull(21) ? null : reader.GetString(21)
+                            Fax = reader.IsDBNull(21) ? null : reader.GetString(21),
+                            PhotoUrl = reader.IsDBNull(22) ? null : reader.GetString(22)
                         }
                     };
                 }
@@ -319,7 +334,6 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
             return car;
         }
-
         public async Task<bool> UpdateCarAsync(Car car)
         {
             string query = @"

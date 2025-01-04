@@ -18,8 +18,7 @@ namespace RentalSystem.Pages.Admin.Dealers
         }
 
         public async Task<IActionResult> OnGetAsync([FromQuery] PaginationModel paginationModel)
-        {
-     
+        { 
             var (dealers, totalUsers) = await _dealers.GetAllDealersAsync(new FilterModel
             {
                 Filter = paginationModel.Filter,

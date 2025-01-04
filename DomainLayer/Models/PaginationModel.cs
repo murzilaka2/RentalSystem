@@ -15,7 +15,7 @@
         public List<string>? CarTypes { get; set; }
         public List<int>? CarTypesInt { get; set; }
         public List<string>? CarBrands { get; set; }
-
+        public int? DealerId { get; set; }
         public int FirstItemIndex => (Page - 1) * PageSize + 1;
         public int LastItemIndex => Math.Min(Page * PageSize, TotalItems);
 
