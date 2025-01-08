@@ -375,5 +375,71 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
             int affectedRows = await _queryBuilder.ExecuteQueryAsync(query, parameters);
             return affectedRows > 0;
         }
+        public async Task<(IEnumerable<CarRentalInfo> Cars, int TotalCount)> GetMostRentedCarsAsync(FilterModel filterModel)
+        {
+            string query = @"
+WITH FilteredCars AS (
+    SELECT 
+        c.Id,
+        c.Brand,
+        c.Model,
+        c.Image,
+        COUNT(r.Id) AS RentalsCount,
+        SUM(DATEDIFF(DAY, r.StartDate, r.EndDate)) AS TotalDaysRented, -- Общее количество дней аренды
+        SUM(DATEDIFF(DAY, r.StartDate, r.EndDate) * c.Price) AS TotalEarnings, -- Общий доход
+        MIN(r.StartDate) AS FirstRentalDate, -- Самая первая дата аренды
+        MAX(r.EndDate) AS LastRentalDate -- Самая последняя дата аренды
+    FROM Cars AS c
+    LEFT JOIN Rentals AS r ON c.Id = r.CarId
+    WHERE r.Id IS NOT NULL
+    AND (@Filter IS NULL OR (c.Brand LIKE '%' + @Filter + '%' OR c.Model LIKE '%' + @Filter + '%'))
+    AND (@Brand = 'ALL' OR @Brand IS NULL OR c.Brand = @Brand)
+    GROUP BY c.Id, c.Brand, c.Model, c.Image, c.Price
+)
+SELECT 
+    *, 
+    COUNT(*) OVER() AS TotalCount
+FROM FilteredCars
+ORDER BY RentalsCount DESC
+OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+
+            SqlParameter[] parameters = {
+        new SqlParameter("@Filter", SqlDbType.NVarChar) { Value = (object)filterModel.Filter ?? DBNull.Value },
+        new SqlParameter("@Brand", SqlDbType.NVarChar) { Value = (object)filterModel.Status ?? DBNull.Value },
+        new SqlParameter("@Offset", SqlDbType.Int) { Value = (filterModel.Page - 1) * filterModel.PageSize },
+        new SqlParameter("@PageSize", SqlDbType.Int) { Value = filterModel.PageSize }
+    };
+
+            List<CarRentalInfo> cars = new List<CarRentalInfo>();
+            int totalCount = 0;
+
+            await _queryBuilder.ExecuteQueryAsync(query, reader =>
+            {
+                while (reader.Read())
+                {
+                    var car = new CarRentalInfo
+                    {
+                        CarId = reader.GetInt32(0),
+                        Brand = reader.GetString(1),
+                        Model = reader.GetString(2),
+                        Image = reader.IsDBNull(3) ? null : reader.GetString(3),
+                        RentalsCount = reader.GetInt32(4),
+                        TotalDaysRented = reader.IsDBNull(5) ? 0 : reader.GetInt32(5),
+                        TotalEarnings = reader.IsDBNull(6) ? 0 : reader.GetDecimal(6),
+                        FirstRentalDate = reader.IsDBNull(7) ? null : reader.GetDateTime(7), 
+                        LastRentalDate = reader.IsDBNull(8) ? null : reader.GetDateTime(8)
+                    };
+                    cars.Add(car);
+
+                    if (totalCount == 0)
+                    {
+                        totalCount = reader.GetInt32(9);
+                    }
+                }
+            }, parameters);
+
+            return (cars, totalCount);
+        }
+
     }
 }

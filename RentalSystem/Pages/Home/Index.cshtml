@@ -78,8 +78,10 @@
                                             <div class="card-rating">
                                                 <div class="card-left"></div>
                                                 <div class="card-right">
-                                                    <span class="rating text-xs-medium rounded-pill">@car.AverageRating 
-                                                        <span class="text-xs-medium neutral-500">(@car.ReviewCount reviews)</span></span>
+                                                    <span class="rating text-xs-medium rounded-pill">
+                                                        @Math.Round(car.AverageRating, 2)
+                                                        <span class="text-xs-medium neutral-500">(@car.ReviewCount reviews)</span>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div class="card-title">
@@ -120,7 +122,8 @@
                                                         <p class="text-md-medium neutral-500">/ day</p>
                                                     </div>
                                                     <div class="card-button">
-                                                        <a class="btn btn-gray" href="getCar?id=@car.Id&returnUrl=@ViewContext.HttpContext.Request.PathAndQuery()">Book Now</a></div>
+                                                        <a class="btn btn-gray" href="getCar?id=@car.Id&returnUrl=@ViewContext.HttpContext.Request.PathAndQuery()">Book Now</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

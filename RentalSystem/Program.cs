@@ -13,17 +13,11 @@ using RentalSystem.Services;
 
 System.Data.SqlClient
 
-//Аренда автомобилей по всей Варшаве!
-
 Иконки:
 1. https://yesicon.app/mage  (Пример использования: <iconify-icon icon="mage:image-plus" class="text-xl"></iconify-icon>  mage:image-plus)
 2. https://yesicon.app/solar (Пример использования: <iconify-icon icon="solar:diagram-down-bold" class="text-xl"></iconify-icon> solar:bus-bold)
 
-Реализовать для админа:
-
-2. Отображение арендованных / не арендованных машин.
-3. Статистика какие машины арендуют (Отображаем на главное странице AdminDashBoard).
- */
+*/
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,6 +72,8 @@ var app = builder.Build();
 //        TestData testData = new TestData();
 //        await testData.GenerateUsersAsync(connection, 50);
 //        await testData.GenerateCarsAsync(connection, 50);
+//        await testData.GenerateRentalsAsync(connection, 750);
+//        await testData.GenerateReviewsAsync(connection, 500);
 //    }
 //    catch (Exception ex)
 //    {

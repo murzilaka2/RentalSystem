@@ -99,7 +99,7 @@ namespace RentalSystem.Data
                         WHEN 6 THEN 'Yellow'
                         ELSE 'Silver'
                     END,
-                    NULL, -- Без изображения
+                    '/uploads/cars/default.jpg',
                     ROUND((RAND() * 4.0) + 1.0, 1), 
                     CAST((RAND() * 23) + 2000 AS INT), 
                     CAST(RAND() * 3 AS INT), 
@@ -136,5 +136,111 @@ namespace RentalSystem.Data
                 }
             }
         }
+        public async Task GenerateRentalsAsync(string connectionString, int count)
+        {
+            string createProcedureSql = $@"
+                CREATE PROCEDURE dbo.GenerateRandomRentals
+                AS
+                BEGIN
+                    SET NOCOUNT ON;
+
+                    DECLARE @i INT = 1;
+
+                    WHILE @i <= {count}
+                    BEGIN
+                        DECLARE @StartDate DATE = DATEADD(DAY, -CAST(RAND() * 365 AS INT), GETDATE()); -- Случайная дата начала в пределах прошлого года
+                        DECLARE @EndDate DATE = DATEADD(DAY, CAST(RAND() * 30 + 1 AS INT), @StartDate); -- Случайная дата окончания после даты начала (до 30 дней)
+
+                        INSERT INTO Rentals (
+                            UserId, CarId, StartDate, EndDate, StartMileage, EndMileage, 
+                            IsGPSNavigationSystem, ChildSeat, AdditionalDriver, InsuranceCoverage, 
+                            Status, PaymentStatus
+                        )
+                        VALUES (
+                            CAST(RAND() * 53 + 1 AS INT), -- Случайный пользователь с ID 1-53
+                            CAST(RAND() * 53 + 1 AS INT), -- Случайное авто с ID 1-53
+                            @StartDate, -- Дата начала аренды
+                            @EndDate, -- Дата окончания аренды
+                            ROUND(RAND() * 200000, 2), -- Случайный пробег на старте
+                            ROUND(RAND() * 200000 + 1000, 2), -- Случайный пробег на конце (больше стартового)
+                            CASE WHEN RAND() < 0.5 THEN 1 ELSE 0 END, -- Случайно выбираем, есть ли GPS
+                            CASE WHEN RAND() < 0.5 THEN 1 ELSE 0 END, -- Случайно выбираем, есть ли детское кресло
+                            CASE WHEN RAND() < 0.5 THEN 1 ELSE 0 END, -- Случайно выбираем, есть ли дополнительный водитель
+                            CASE WHEN RAND() < 0.5 THEN 1 ELSE 0 END, -- Случайно выбираем, есть ли страховка
+                            CAST(RAND() * 3 AS INT), -- Случайный статус (0 - активен, 1 - завершен, 2 - отменен)
+                            CAST(RAND() * 2 AS INT) -- Случайный статус оплаты (0 - не оплачено, 1 - оплачено)
+                        );
+
+                        SET @i = @i + 1;
+                    END;
+                END;
+                ";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                using (SqlCommand command = new SqlCommand("DROP PROCEDURE IF EXISTS dbo.GenerateRandomRentals", connection))
+                {
+                    await command.ExecuteNonQueryAsync();
+                    command.CommandText = createProcedureSql;
+                    await command.ExecuteNonQueryAsync();
+                    command.CommandText = "dbo.GenerateRandomRentals";
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+        public async Task GenerateReviewsAsync(string connectionString, int count)
+        {
+            string createProcedureSql = $@"
+            CREATE PROCEDURE dbo.GenerateRandomReviews
+            AS
+            BEGIN
+                SET NOCOUNT ON;
+
+                DECLARE @i INT = 1;
+
+                WHILE @i <= {count}
+                BEGIN
+                    DECLARE @Rating INT = CAST(RAND() * 5 + 2 AS INT); -- Случайный рейтинг от 2 до 5
+                    DECLARE @Message NVARCHAR(MAX) = CASE 
+                        WHEN @Rating = 5 THEN 'Great car! I recommend it to everyone!'
+                        WHEN @Rating = 4 THEN 'Its a nice car, but there are minor flaws.'
+                        WHEN @Rating = 3 THEN 'Its an average car, but theres a lot to pick on.'
+                        WHEN @Rating = 2 THEN 'The car is not bad overall, but there are a lot of improvements.'
+                        ELSE 'Very bad car, I dont recommend it.'
+                    END;
+
+                    INSERT INTO Reviews (
+                        CreatedAt, Rating, Message, UserId, CarId
+                    )
+                    VALUES (
+                        GETDATE(), -- Дата создания отзыва (текущая дата)
+                        @Rating, -- Рейтинг отзыва
+                        @Message, -- Сообщение отзыва
+                        CAST(RAND() * 53 + 1 AS INT), -- Случайный пользователь с ID 1-53
+                        CAST(RAND() * 53 + 1 AS INT) -- Случайное авто с ID 1-53
+                    );
+
+                    SET @i = @i + 1;
+                END;
+            END;
+            ";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                using (SqlCommand command = new SqlCommand("DROP PROCEDURE IF EXISTS dbo.GenerateRandomReviews", connection))
+                {
+                    await command.ExecuteNonQueryAsync();
+                    command.CommandText = createProcedureSql;
+                    await command.ExecuteNonQueryAsync();
+                    command.CommandText = "dbo.GenerateRandomReviews";
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
     }
 }

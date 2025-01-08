@@ -12,5 +12,6 @@ namespace RentalSystem.Interfaces
         Task<bool> RemoveCarAsync(int carId);
         Task<Car> GetCarAsync(int carId);
         Task<bool> UpdateCarAsync(Car car);
+        Task<(IEnumerable<CarRentalInfo> Cars, int TotalCount)> GetMostRentedCarsAsync(FilterModel filterModel);
     }
 }

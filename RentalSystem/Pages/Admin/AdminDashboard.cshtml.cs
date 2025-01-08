@@ -3,42 +3,50 @@ using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using RentalSystem.Interfaces;
+using RentalSystem.Models;
 
 namespace RentalSystem.Pages.Admin
 {
     [Authorize(Roles = "Admin")]
     public class AdminDashboardModel : PageModel
     {
-        private readonly IReview _reviews;
-        public List<Review> Reviews { get; set; }
-        public int TotalPages { get; set; }
-        public int TotalItems { get; set; }
-        public int PageSize { get; set; } = 3;
-        public int Page { get; set; } = 1;
-        public AdminDashboardModel(IReview reviews)
+        private readonly ICar _cars;
+        public List<CarRentalInfo> CarRentalInfos { get; set; }
+        public PaginationModel CarRentalPagination { get; set; } 
+        public int TotalCarRentalPages { get; set; }
+        public int PageSize { get; set; } = 10;
+        public int CarRentalPage { get; set; } = 1;
+
+        public AdminDashboardModel(ICar cars)
         {
-            _reviews = reviews;
+            _cars = cars;
         }
 
-        public async Task<IActionResult> OnGetAsync([FromQuery] int page = 1)
+        //Доделать поиск и пагинацию
+        //Сделать тестовые данные для списка желаний
+        //Сделать тестовые данные для тест драйвов
+
+        public async Task<IActionResult> OnGetAsync([FromQuery] PaginationModel carRentalPaginationModel, [FromQuery] int carRentalPage = 1)
         {
-            (Reviews, TotalItems) = (await _reviews.GetAllReviewsAsync(page, PageSize));
-            TotalPages = (int)Math.Ceiling((double)TotalItems / PageSize);
-            Page = page;
+            var (carRentals, totalCarRentals) = await _cars.GetMostRentedCarsAsync(new FilterModel
+            {
+                Filter = carRentalPaginationModel.Filter,
+                Status = carRentalPaginationModel.Status == "All" ? null : carRentalPaginationModel.Status,
+                Page = carRentalPaginationModel.Page,
+                PageSize = carRentalPaginationModel.PageSize
+            });
+
+            CarRentalInfos = carRentals.ToList();
+            CarRentalPagination = new PaginationModel(totalCarRentals, carRentalPaginationModel.Page, carRentalPaginationModel.PageSize,
+                Request.Path, carRentalPaginationModel.Filter, carRentalPaginationModel.Status)
+            {
+                SelectOptions = new string[] { "Model" }
+            };
+            TotalCarRentalPages = (int)Math.Ceiling((double)totalCarRentals / PageSize);
+            CarRentalPage = carRentalPage;          
             return Page();
         }
-
-        public async Task<IActionResult> OnPostDeleteAsync(int id, string returnUrl)
-        {
-            if (id > 0 && await _reviews.RemoveReviewAsync(id))
-            {
-                TempData["SuccessfullyDeleted"] = "The review has been successfully deleted.";
-            }
-            else
-            {
-                TempData["Error"] = "Failed to delete the review. Try again later.";
-            }
-            return Redirect(returnUrl);
-        }
     }
+
 }
