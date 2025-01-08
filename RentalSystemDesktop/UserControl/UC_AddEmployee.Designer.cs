@@ -134,6 +134,7 @@ namespace RentalSystemDesktop.UserControls
             // 
             // cbRoles
             // 
+            cbRoles.DropDownStyle = ComboBoxStyle.DropDownList;
             cbRoles.Location = new Point(102, 310);
             cbRoles.Name = "cbRoles";
             cbRoles.Size = new Size(262, 23);
@@ -305,6 +306,7 @@ namespace RentalSystemDesktop.UserControls
             Controls.Add(label1);
             Name = "UC_AddEmployee";
             Size = new Size(1057, 759);
+            Load += UC_AddEmployee_Load;
             ((ISupportInitialize)numDrivingExperience).EndInit();
             ((ISupportInitialize)pictureBoxProfile).EndInit();
             ResumeLayout(false);

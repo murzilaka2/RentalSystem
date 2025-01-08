@@ -38,7 +38,7 @@
             dgvRentals.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvRentals.Location = new Point(40, 149);
             dgvRentals.Name = "dgvRentals";
-            dgvRentals.Size = new Size(762, 527);
+            dgvRentals.Size = new Size(970, 527);
             dgvRentals.TabIndex = 0;
             // 
             // label1
@@ -59,6 +59,7 @@
             Controls.Add(dgvRentals);
             Name = "UC_Rentals";
             Size = new Size(1057, 759);
+            Load += UC_Rentals_Load;
             ((System.ComponentModel.ISupportInitialize)dgvRentals).EndInit();
             ResumeLayout(false);
             PerformLayout();

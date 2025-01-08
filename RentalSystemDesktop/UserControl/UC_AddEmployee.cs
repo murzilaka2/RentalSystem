@@ -47,17 +47,19 @@ namespace RentalSystemDesktop.UserControls
             try
             {
                 var roles = await _roleRepository.GetAllRolesAsync();
-
+              
                 cbRoles.DataSource = roles.ToList();
                 cbRoles.DisplayMember = "Name";
-                cbRoles.ValueMember = "Id";    
-                cbRoles.SelectedIndex = -1;     
+                cbRoles.ValueMember = "Id";
+                cbRoles.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading roles: {ex.Message}");
             }
         }
+
+
 
         private void PopulateFieldsForEdit()
         {
@@ -248,10 +250,9 @@ namespace RentalSystemDesktop.UserControls
             {
                 var selectedRoleId = cbRoles.SelectedValue.ToString();
                 var selectedRoleName = cbRoles.Text;
-
-                MessageBox.Show($"Selected Role: {selectedRoleName} (ID: {selectedRoleId})");
             }
         }
 
+        
     }
 }

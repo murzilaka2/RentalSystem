@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            btnLogin = new Button();
+            label7 = new Label();
+            label6 = new Label();
+            txtPassword = new TextBox();
+            txtEmail = new TextBox();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
             label4 = new Label();
             label5 = new Label();
-            textBox1 = new TextBox();
-            textBox2 = new TextBox();
-            label6 = new Label();
-            label7 = new Label();
-            btnLogin = new Button();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -48,13 +48,64 @@
             panel1.Controls.Add(btnLogin);
             panel1.Controls.Add(label7);
             panel1.Controls.Add(label6);
-            panel1.Controls.Add(textBox2);
-            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(txtPassword);
+            panel1.Controls.Add(txtEmail);
             panel1.Controls.Add(label1);
             panel1.Location = new Point(12, 12);
             panel1.Name = "panel1";
             panel1.Size = new Size(542, 627);
             panel1.TabIndex = 0;
+            // 
+            // btnLogin
+            // 
+            btnLogin.BackColor = Color.FromArgb(0, 126, 188);
+            btnLogin.FlatStyle = FlatStyle.Popup;
+            btnLogin.Font = new Font("Century Gothic", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLogin.ForeColor = SystemColors.Control;
+            btnLogin.Location = new Point(175, 452);
+            btnLogin.Name = "btnLogin";
+            btnLogin.Size = new Size(192, 40);
+            btnLogin.TabIndex = 5;
+            btnLogin.Text = "Login";
+            btnLogin.UseVisualStyleBackColor = false;
+            btnLogin.Click += btnLogin_Click;
+            btnLogin.KeyDown += btnLogin_KeyDown;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label7.ForeColor = Color.FromArgb(23, 43, 91);
+            label7.Location = new Point(116, 296);
+            label7.Name = "label7";
+            label7.Size = new Size(71, 16);
+            label7.TabIndex = 4;
+            label7.Text = "Password:";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.ForeColor = Color.FromArgb(23, 43, 91);
+            label6.Location = new Point(116, 169);
+            label6.Name = "label6";
+            label6.Size = new Size(51, 16);
+            label6.TabIndex = 3;
+            label6.Text = "Email: ";
+            // 
+            // txtPassword
+            // 
+            txtPassword.Location = new Point(96, 315);
+            txtPassword.Name = "txtPassword";
+            txtPassword.Size = new Size(355, 23);
+            txtPassword.TabIndex = 2;
+            // 
+            // txtEmail
+            // 
+            txtEmail.Location = new Point(96, 193);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(355, 23);
+            txtEmail.TabIndex = 1;
             // 
             // label1
             // 
@@ -111,56 +162,6 @@
             label5.TabIndex = 4;
             label5.Text = "Develop by ";
             // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(96, 193);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(355, 23);
-            textBox1.TabIndex = 1;
-            // 
-            // textBox2
-            // 
-            textBox2.Location = new Point(96, 315);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(355, 23);
-            textBox2.TabIndex = 2;
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.ForeColor = Color.FromArgb(23, 43, 91);
-            label6.Location = new Point(116, 169);
-            label6.Name = "label6";
-            label6.Size = new Size(51, 16);
-            label6.TabIndex = 3;
-            label6.Text = "Email: ";
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.ForeColor = Color.FromArgb(23, 43, 91);
-            label7.Location = new Point(116, 296);
-            label7.Name = "label7";
-            label7.Size = new Size(71, 16);
-            label7.TabIndex = 4;
-            label7.Text = "Password:";
-            // 
-            // btnLogin
-            // 
-            btnLogin.BackColor = Color.FromArgb(0, 126, 188);
-            btnLogin.FlatStyle = FlatStyle.Popup;
-            btnLogin.Font = new Font("Century Gothic", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnLogin.ForeColor = SystemColors.Control;
-            btnLogin.Location = new Point(175, 452);
-            btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(192, 40);
-            btnLogin.TabIndex = 5;
-            btnLogin.Text = "Login";
-            btnLogin.UseVisualStyleBackColor = false;
-            btnLogin.Click += btnLogin_Click;
-            // 
             // Login
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -175,7 +176,9 @@
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Login";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Login";
+            KeyDown += btnLogin_Click;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);
@@ -186,8 +189,8 @@
 
         private Panel panel1;
         private Label label1;
-        private TextBox textBox2;
-        private TextBox textBox1;
+        private TextBox txtPassword;
+        private TextBox txtEmail;
         private Label label2;
         private Label label3;
         private Label label4;

@@ -6,6 +6,8 @@ using DomainLayer;
 using RentalSystemDesktop.ViewModels;
 using RentalSystem.Services;
 using Microsoft.Extensions.Configuration;
+using DomainLayer.Interfaces;
+using InfrastructureLayer.Repository;
 
 namespace RentalSystemDesktop
 {
@@ -18,9 +20,9 @@ namespace RentalSystemDesktop
         static void Main()
         {
             var configuration = new ConfigurationBuilder()
-           .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-           .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-           .Build();
+               .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+               .Build();
 
             var services = new ServiceCollection();
             ConfigureServices(services, configuration);
@@ -28,18 +30,20 @@ namespace RentalSystemDesktop
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(serviceProvider.GetRequiredService<Dashboard>());
+            Application.Run(serviceProvider.GetRequiredService<Login>());
         }
 
         private static void ConfigureServices(ServiceCollection services, IConfiguration configuration)
         {
-            
+            services.AddSingleton<IRental, RentalRepository>();
             services.AddSingleton<IConfiguration>(configuration);
             services.AddSingleton<IRole, RoleRepository>();
             services.AddSingleton<IConnectionStringProvider, ConfigConnectionStringProvider>();
             services.AddSingleton<IUser, UserRepository>();
             services.AddSingleton<ICar, CarRepository>();
             services.AddSingleton<QueryBuilder>();
+
+            services.AddTransient<Login>();
             services.AddTransient<Dashboard>();
         }
     }

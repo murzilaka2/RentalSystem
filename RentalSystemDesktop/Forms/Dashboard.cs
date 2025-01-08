@@ -1,4 +1,5 @@
-﻿using RentalSystem.Interfaces;
+﻿using DomainLayer.Interfaces;
+using RentalSystem.Interfaces;
 using RentalSystem.Repository;
 using RentalSystem.Services;
 using RentalSystemDesktop.UserControl;
@@ -13,13 +14,15 @@ namespace RentalSystemDesktop.Forms
         public readonly IUser _userRepository;
         public readonly ICar _carRepository;
         public readonly IRole _roleRepository;
+        public readonly IRental _rentalRepository;
 
-        public Dashboard(IUser userRepository, ICar carRepository, IRole roleRepository)
+        public Dashboard(IUser userRepository, ICar carRepository, IRole roleRepository, IRental rentalRepository)
         {
             InitializeComponent();
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _carRepository = carRepository ?? throw new ArgumentNullException(nameof(carRepository));
             _roleRepository = roleRepository ?? throw new ArgumentException(nameof(roleRepository));
+            _rentalRepository = rentalRepository ?? throw new ArgumentException(nameof(_rentalRepository));
         }
 
         public void ShowUserControl(System.Windows.Forms.UserControl userControl)
@@ -55,7 +58,7 @@ namespace RentalSystemDesktop.Forms
 
         private void btnRentals_Click(object sender, EventArgs e)
         {
-            var uC_Rentals = new UC_Rentals();
+            var uC_Rentals = new UC_Rentals(_rentalRepository);
             ShowUserControl(uC_Rentals);
         }
 

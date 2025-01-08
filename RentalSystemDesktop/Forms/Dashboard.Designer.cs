@@ -41,6 +41,7 @@
             iconButton2 = new FontAwesome.Sharp.IconButton();
             btnClose = new FontAwesome.Sharp.IconButton();
             mainPanel = new Panel();
+            btnLogout = new Button();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -50,6 +51,7 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(23, 43, 91);
+            panel1.Controls.Add(btnLogout);
             panel1.Controls.Add(btnDealership);
             panel1.Controls.Add(panel4);
             panel1.Controls.Add(btnHome);
@@ -198,6 +200,16 @@
             mainPanel.Size = new Size(1027, 759);
             mainPanel.TabIndex = 2;
             // 
+            // btnLogout
+            // 
+            btnLogout.FlatStyle = FlatStyle.Flat;
+            btnLogout.Location = new Point(3, 803);
+            btnLogout.Name = "btnLogout";
+            btnLogout.Size = new Size(278, 51);
+            btnLogout.TabIndex = 8;
+            btnLogout.Text = "Logout";
+            btnLogout.UseVisualStyleBackColor = true;
+            // 
             // Dashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -234,5 +246,6 @@
         private FontAwesome.Sharp.IconButton iconButton2;
         private FontAwesome.Sharp.IconButton btnClose;
         private Button btnDealership;
+        private Button btnLogout;
     }
 }

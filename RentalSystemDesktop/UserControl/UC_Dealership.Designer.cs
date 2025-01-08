@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             label1 = new Label();
+            dataGridView1 = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -41,20 +43,26 @@
             label1.TabIndex = 2;
             label1.Text = "Dealership";
             // 
+            // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(56, 148);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.Size = new Size(730, 514);
+            dataGridView1.TabIndex = 3;
+            // 
             // UC_Dealership
             // 
+            Controls.Add(dataGridView1);
             Controls.Add(label1);
             Name = "UC_Dealership";
             Size = new Size(1057, 759);
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
-
-
-
-
-
         }
         #endregion
         private Label label1;
+        private DataGridView dataGridView1;
     }
 }

@@ -485,18 +485,6 @@ namespace RentalSystem.Repository
             return (users, totalCount);
         }
 
-        public async Task<bool> SignInAsync(User user)
-        {
-            string query = "SELECT Password FROM Users WHERE Email = @Email";
-
-            string? storedPassword = await _queryBuilder.ExecuteScalarAsync<string>(
-                query,
-                new SqlParameter("@Email", user.Email)
-            );
-
-            return storedPassword == user.HashPassword;
-        }
-
         public bool IsValidFilter(FilterModel filterModel)
         {
             if (filterModel == null) return false;

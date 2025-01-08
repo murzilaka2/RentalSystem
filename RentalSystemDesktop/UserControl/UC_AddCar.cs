@@ -17,9 +17,10 @@ namespace RentalSystemDesktop.UserControls
             try
             {
                 _carRepository = carRepository;
-                currentCar = new Car(); // Ініціалізація під час створення форми
+                currentCar = new Car();
                 InitializeComponent();
-                ShowStep(currentStep);
+                LoadComboBoxes(); 
+                ShowStep(currentStep); 
             }
             catch (Exception ex)
             {
@@ -27,6 +28,20 @@ namespace RentalSystemDesktop.UserControls
             }
         }
 
+        private void LoadComboBoxes()
+        {
+            try
+            {
+                cmbCarType.DataSource = Enum.GetValues(typeof(CarType));
+                cmbCarType.DropDownStyle = ComboBoxStyle.DropDownList;
+                cmbTransmission.DataSource = Enum.GetValues(typeof(Transmission));
+                cmbTransmission.DropDownStyle = ComboBoxStyle.DropDownList;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading ComboBox data: {ex.Message}");
+            }
+        }
 
         private void ShowStep(int step)
         {
@@ -50,11 +65,6 @@ namespace RentalSystemDesktop.UserControls
 
         private void SaveStepTwo()
         {
-            if (currentCar == null)
-            {
-                currentCar = new Car();
-            }
-
             if (cmbCarType.SelectedItem != null)
             {
                 currentCar.CarType = (CarType)cmbCarType.SelectedItem;
@@ -67,7 +77,6 @@ namespace RentalSystemDesktop.UserControls
 
             currentCar.Color = string.IsNullOrWhiteSpace(txtColor.Text) ? null : txtColor.Text.Trim();
         }
-
 
         private void SaveStepThree()
         {
@@ -91,10 +100,6 @@ namespace RentalSystemDesktop.UserControls
                 {
                     MessageBox.Show("Failed to add car. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-            catch (ArgumentNullException ex)
-            {
-                MessageBox.Show($"Missing data: {ex.Message}", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
@@ -122,11 +127,6 @@ namespace RentalSystemDesktop.UserControls
 
         private void btnNext_Click(object sender, EventArgs e)
         {
-            if (currentCar == null) // Перевірка на null
-            {
-                currentCar = new Car(); // Ініціалізація
-            }
-
             switch (currentStep)
             {
                 case 1:
@@ -155,7 +155,6 @@ namespace RentalSystemDesktop.UserControls
                 ShowStep(currentStep);
             }
         }
-
 
         private void btnBack_Click(object sender, EventArgs e)
         {

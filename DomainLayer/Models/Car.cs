@@ -15,15 +15,9 @@ namespace RentalSystem.Models
         public CarType CarType { get; set; }
         public Transmission Transmission { get; set; }
         public double CurrentMileage { get; set; }
-
-        //Лимит миль на аренду. Если -1, то без ограничения
         public int MileageLimit { get; set; }
         public int SeatsCount { get; set; }
-
-        //Цена в сутки
         public decimal Price { get; set; }
-        
-        //Статус аренды (используем только при работе с арендой)
         public RentalStatus RentalStatus { get; set; }
         public int DealerId { get; set; }
         public Dealer Dealer { get; set; }
