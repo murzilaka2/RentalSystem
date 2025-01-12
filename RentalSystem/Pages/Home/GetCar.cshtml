@@ -78,7 +78,7 @@
         <div class="container">
             <div class="tour-rate">
                 <div class="rate-element">
-                    <span>@Model.AverageRating <span class="text-sm-medium neutral-500">(@Model.TotalReviews reviews)</span></span>
+                    <span>@Math.Round(Model.AverageRating, 2) <span class="text-sm-medium neutral-500">(@Model.TotalReviews reviews)</span></span>
                 </div>
             </div>
             <div class="row">

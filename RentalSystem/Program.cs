@@ -74,6 +74,8 @@ var app = builder.Build();
 //        await testData.GenerateCarsAsync(connection, 50);
 //        await testData.GenerateRentalsAsync(connection, 750);
 //        await testData.GenerateReviewsAsync(connection, 500);
+//        await testData.GenerateWishesListAsync(connection, 300);
+//        await testData.GenerateTestDrivesAsync(connection, 75);
 //    }
 //    catch (Exception ex)
 //    {

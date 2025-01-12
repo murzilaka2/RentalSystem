@@ -11721,8 +11721,8 @@ div.dt-container .dt-paging .dt-paging-button:hover:hover, div.dt-container .dt-
 }
 
 .form-select {
-  padding: 0.5625rem 1.875rem 0.5625rem 0.9375rem;
-  background-position-x: right;
+    padding: 0.5625rem 1.075rem 0.5625rem 0.9375rem;
+    background-position-x: right;
 }
 
 .form-select.form-select-lg {
@@ -14254,7 +14254,7 @@ td.fc-header-center {
   -ms-border-radius: 0.5rem;
   -o-border-radius: 0.5rem;
   padding-block: 0.3125rem;
-  padding-inline-start: 2.625rem;
+  padding-inline-start: 0.625rem;
   padding-inline-end: 1.25rem;
   color: var(--text-primary-light);
 }

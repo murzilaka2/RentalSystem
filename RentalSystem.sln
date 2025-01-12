@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfrastructureLayer", "Infr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailService", "EmailService\EmailService.csproj", "{4F1CEEA0-6653-47F5-8AEE-1EC3D2D6CA21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentalSystem.Tests", "RentalSystem.Tests\RentalSystem.Tests.csproj", "{574679DA-482B-4C87-8A6D-20DC4E344CC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{4F1CEEA0-6653-47F5-8AEE-1EC3D2D6CA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F1CEEA0-6653-47F5-8AEE-1EC3D2D6CA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F1CEEA0-6653-47F5-8AEE-1EC3D2D6CA21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{574679DA-482B-4C87-8A6D-20DC4E344CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{574679DA-482B-4C87-8A6D-20DC4E344CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{574679DA-482B-4C87-8A6D-20DC4E344CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{574679DA-482B-4C87-8A6D-20DC4E344CC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

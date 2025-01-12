@@ -393,7 +393,6 @@ WITH FilteredCars AS (
     LEFT JOIN Rentals AS r ON c.Id = r.CarId
     WHERE r.Id IS NOT NULL
     AND (@Filter IS NULL OR (c.Brand LIKE '%' + @Filter + '%' OR c.Model LIKE '%' + @Filter + '%'))
-    AND (@Brand = 'ALL' OR @Brand IS NULL OR c.Brand = @Brand)
     GROUP BY c.Id, c.Brand, c.Model, c.Image, c.Price
 )
 SELECT 
@@ -405,7 +404,6 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
             SqlParameter[] parameters = {
         new SqlParameter("@Filter", SqlDbType.NVarChar) { Value = (object)filterModel.Filter ?? DBNull.Value },
-        new SqlParameter("@Brand", SqlDbType.NVarChar) { Value = (object)filterModel.Status ?? DBNull.Value },
         new SqlParameter("@Offset", SqlDbType.Int) { Value = (filterModel.Page - 1) * filterModel.PageSize },
         new SqlParameter("@PageSize", SqlDbType.Int) { Value = filterModel.PageSize }
     };

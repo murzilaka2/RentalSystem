@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "_Layout";
 }
+@await RenderSectionAsync("Styles", required: false)
 
 @* Мастер страница для Работника. Прописывем свои пункты меню и разделы. *@
 @RenderBody()

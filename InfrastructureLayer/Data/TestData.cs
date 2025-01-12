@@ -241,6 +241,103 @@ namespace RentalSystem.Data
                 }
             }
         }
+        public async Task GenerateWishesListAsync(string connectionString, int count)
+        {
+            string createProcedureSql = $@"
+            CREATE PROCEDURE dbo.GenerateRandomWishes
+            AS
+            BEGIN
+                SET NOCOUNT ON;
 
+                DECLARE @i INT = 1;
+
+                WHILE @i <= {count}
+                BEGIN
+                    DECLARE @CarId INT = CAST(RAND() * 53 + 1 AS INT); -- Случайный ID автомобиля от 1 до 53
+                    DECLARE @UserId INT = CAST(RAND() * 53 + 1 AS INT); -- Случайный ID пользователя от 1 до 53
+
+                    -- Проверка на уникальность пары CarId и UserId
+                    IF NOT EXISTS (SELECT 1 FROM WishesList WHERE CarId = @CarId AND UserId = @UserId)
+                    BEGIN
+                        INSERT INTO WishesList (
+                            CreatedAt, CarId, UserId
+                        )
+                        VALUES (
+                            GETDATE(), -- Дата добавления в список желаемых автомобилей
+                            @CarId,    -- ID автомобиля
+                            @UserId    -- ID пользователя
+                        );
+                    END
+
+                    SET @i = @i + 1;
+                END;
+            END;
+            ";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                using (SqlCommand command = new SqlCommand("DROP PROCEDURE IF EXISTS dbo.GenerateRandomWishes", connection))
+                {
+                    await command.ExecuteNonQueryAsync();
+                    command.CommandText = createProcedureSql;
+                    await command.ExecuteNonQueryAsync();
+                    command.CommandText = "dbo.GenerateRandomWishes";
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+        public async Task GenerateTestDrivesAsync(string connectionString, int count)
+        {
+            string createProcedureSql = $@"
+            CREATE PROCEDURE dbo.GenerateRandomTestDrives
+            AS
+            BEGIN
+                SET NOCOUNT ON;
+
+                DECLARE @i INT = 1;
+
+                WHILE @i <= {count}
+                BEGIN
+                    DECLARE @CarId INT = CAST(RAND() * 53 + 1 AS INT); -- Случайный ID автомобиля от 1 до 53
+                    DECLARE @TestDriveStatus INT = CAST(RAND() * 2 AS INT); -- Случайный статус тест-драйва (0 - ожидается, 1 - завершен, 2 - отменен)
+            
+                    -- Генерация случайных данных для имени и телефона
+                    DECLARE @Name NVARCHAR(MAX) = CONCAT('Test Driver ', CAST(RAND() * 1000 + 1 AS INT));
+                    DECLARE @Phone NVARCHAR(MAX) = CONCAT('+1 (', CAST(RAND() * 9 + 1 AS INT), CAST(RAND() * 10 AS INT), CAST(RAND() * 10 AS INT), ') ', CAST(RAND() * 100 + 100 AS INT), '-', CAST(RAND() * 10000 + 10000 AS INT));
+
+                    -- Генерация случайной даты в пределах следующего года (от текущей даты до 300 дней вперёд)
+                    DECLARE @TestDriveDate DATETIME = DATEADD(DAY, CAST(RAND() * 300 AS INT), GETDATE());
+
+                    INSERT INTO TestDrives (
+                        Name, Phone, Date, CarId, TestDriveStatus
+                    )
+                    VALUES (
+                        @Name,          -- Имя клиента
+                        @Phone,         -- Номер телефона
+                        @TestDriveDate, -- Дата тест-драйва
+                        @CarId,         -- ID автомобиля
+                        @TestDriveStatus -- Статус тест-драйва
+                    );
+
+                    SET @i = @i + 1;
+                END;
+            END;
+            ";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                using (SqlCommand command = new SqlCommand("DROP PROCEDURE IF EXISTS dbo.GenerateRandomTestDrives", connection))
+                {
+                    await command.ExecuteNonQueryAsync();
+                    command.CommandText = createProcedureSql;
+                    await command.ExecuteNonQueryAsync();
+                    command.CommandText = "dbo.GenerateRandomTestDrives";
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
     }
 }

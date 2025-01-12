@@ -31,10 +31,7 @@ namespace RentalSystem.Pages.Shared.Pages
             TestDrives = testDrives.ToList();
 
             Pagination = new PaginationModel(totalTestDrive, paginationModel.Page, paginationModel.PageSize,
-                Request.Path, paginationModel.Filter, paginationModel.Status)
-            {
-                SelectOptions = new string[] { "Date", "Name", "Phone", "Car Model" }
-            };
+                Request.Path, paginationModel.Filter, paginationModel.Status);
             return Page();
         }
         public async Task<IActionResult> OnPostChangeStatusAsync(int id, TestDriveStatus testDriveStatus, string returnUrl)

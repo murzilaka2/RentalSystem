@@ -15,7 +15,7 @@ namespace RentalSystem.Pages.Account
         [BindProperty]
         public UserProfileViewModel UserProfileModel { get; set; }
 
-        public ChangePasswordViewModel ChangePasswordModel { get; set; }    
+        public ChangePasswordViewModel ChangePasswordModel { get; set; }
 
         public ProfileModel(IUser users, IWebHostEnvironment environment)
         {

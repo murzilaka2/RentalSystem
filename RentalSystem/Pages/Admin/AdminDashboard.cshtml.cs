@@ -23,10 +23,6 @@ namespace RentalSystem.Pages.Admin
             _cars = cars;
         }
 
-        //Доделать поиск и пагинацию
-        //Сделать тестовые данные для списка желаний
-        //Сделать тестовые данные для тест драйвов
-
         public async Task<IActionResult> OnGetAsync([FromQuery] PaginationModel carRentalPaginationModel, [FromQuery] int carRentalPage = 1)
         {
             var (carRentals, totalCarRentals) = await _cars.GetMostRentedCarsAsync(new FilterModel
@@ -39,10 +35,7 @@ namespace RentalSystem.Pages.Admin
 
             CarRentalInfos = carRentals.ToList();
             CarRentalPagination = new PaginationModel(totalCarRentals, carRentalPaginationModel.Page, carRentalPaginationModel.PageSize,
-                Request.Path, carRentalPaginationModel.Filter, carRentalPaginationModel.Status)
-            {
-                SelectOptions = new string[] { "Model" }
-            };
+                Request.Path, carRentalPaginationModel.Filter, carRentalPaginationModel.Status);
             TotalCarRentalPages = (int)Math.Ceiling((double)totalCarRentals / PageSize);
             CarRentalPage = carRentalPage;          
             return Page();

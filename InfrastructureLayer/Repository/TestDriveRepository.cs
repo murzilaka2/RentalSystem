@@ -79,7 +79,8 @@ namespace InfrastructureLayer.Repository
                        COUNT(*) OVER() AS TotalCount
                 FROM [TestDrives] td
                 LEFT JOIN [Cars] c ON td.[CarId] = c.[Id]
-                WHERE (@Filter IS NULL OR td.[Name] LIKE @Filter)
+                WHERE (@Filter IS NULL OR td.[Name] LIKE @Filter OR td.[Phone] LIKE @Filter
+                OR c.[Model] LIKE @Filter)
                 ORDER BY {sortOrder}
                 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
             )
@@ -88,13 +89,13 @@ namespace InfrastructureLayer.Repository
 
             SqlParameter[] parameters =
             {
-        new SqlParameter("@PageSize", SqlDbType.Int) { Value = filterModel.PageSize },
-        new SqlParameter("@Offset", SqlDbType.Int) { Value = (filterModel.Page - 1) * filterModel.PageSize },
-        new SqlParameter("@Filter", SqlDbType.NVarChar)
-        {
-            Value = string.IsNullOrEmpty(filterModel.Filter) ? DBNull.Value : $"%{filterModel.Filter}%"
-        }
-    };
+                new SqlParameter("@PageSize", SqlDbType.Int) { Value = filterModel.PageSize },
+                new SqlParameter("@Offset", SqlDbType.Int) { Value = (filterModel.Page - 1) * filterModel.PageSize },
+                new SqlParameter("@Filter", SqlDbType.NVarChar)
+                {
+                    Value = string.IsNullOrEmpty(filterModel.Filter) ? DBNull.Value : $"%{filterModel.Filter}%"
+                }
+            };
 
             await _queryBuilder.ExecuteQueryAsync(query, reader =>
             {
