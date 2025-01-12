@@ -44,6 +44,7 @@ namespace RentalSystem.Pages.Admin.Users
                 Email = UserProfileModel.Email,
                 FullName = UserProfileModel.FullName,
                 HashPassword = hashedPassword,
+                Salt = salt,
                 RoleId = UserProfileModel.RoleId.Value,
                 Profile = new UserProfile
                 {

@@ -80,9 +80,6 @@ namespace RentalSystem.Repository
         }
         public async Task<bool> AddUserAsync(User user)
         {
-            string salt = SecurityHelper.GenerateSalt(70);
-            string hashedPassword = SecurityHelper.HashPassword(user.HashPassword, salt, 10101, 70);
-
             string query = @"
             INSERT INTO [Users] ([Email], [FullName], [RoleId], [HashPassword], [Salt])
             OUTPUT INSERTED.Id
@@ -92,8 +89,8 @@ namespace RentalSystem.Repository
                 new SqlParameter("@Email", SqlDbType.NVarChar) { Value = user.Email },
                 new SqlParameter("@FullName", SqlDbType.NVarChar) { Value = user.FullName },
                 new SqlParameter("@RoleId", SqlDbType.Int) { Value = user.RoleId },
-                new SqlParameter("@HashPassword", SqlDbType.NVarChar) { Value = hashedPassword },
-                new SqlParameter("@Salt", SqlDbType.NVarChar) { Value = salt }
+                new SqlParameter("@HashPassword", SqlDbType.NVarChar) { Value = user.HashPassword },
+                new SqlParameter("@Salt", SqlDbType.NVarChar) { Value = user.Salt }
             };
 
             int userId = await _queryBuilder.ExecuteScalarAsync<int>(query, parameters);
